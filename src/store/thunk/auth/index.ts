@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { setAlert } from 'store/slices/alert';
 import { USER_ENDPOINT } from 'constants/apiEndPoint';
 import { AUTH_PREFIX } from 'constants/thunkPrefix';
-import fetchDataWithCredential from 'utils/fetchDataWithCredential';
+import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
 import i18n from 'i18n';
 import {
   incrementLoginAttempts,
@@ -22,7 +22,7 @@ interface LoginSchema {
 export const login = createAsyncThunk(AUTH_PREFIX.LOGIN, async (data: LoginSchema, { dispatch, rejectWithValue }) => {
   dispatch(setLoading(true));
 
-  const response = await fetchDataWithCredential({
+  const response = await fetchDataWithoutCredential({
     url: USER_ENDPOINT.LOGIN,
     method: 'POST',
     body: data,
@@ -48,7 +48,7 @@ export const sendEmailResetPassword = createAsyncThunk(
   async (data: LoginSchema, { dispatch }) => {
     dispatch(setLoading(true));
 
-    const response = await fetchDataWithCredential({
+    const response = await fetchDataWithoutCredential({
       url: USER_ENDPOINT.REQUEST_RESET_PASSWORD,
       method: 'POST',
       body: data,
@@ -76,7 +76,7 @@ export const getCurrentUserData = createAsyncThunk(AUTH_PREFIX.GET_CURRENT_USER_
   const tokenUser = localStorage.getItem('tokenUser');
 
   try {
-    const response = await fetchDataWithCredential({
+    const response = await fetchDataWithoutCredential({
       url: USER_ENDPOINT.GET_CURRENT_USER_INFO,
       method: 'POST',
       body: { tokenUser },
@@ -114,7 +114,7 @@ export const getCurrentUserData = createAsyncThunk(AUTH_PREFIX.GET_CURRENT_USER_
 
 export const register = createAsyncThunk(AUTH_PREFIX.REGISTER, async (data: LoginSchema, { dispatch }) => {
   dispatch(setLoading(true));
-  const response = await fetchDataWithCredential({
+  const response = await fetchDataWithoutCredential({
     url: USER_ENDPOINT.REGISTER,
     method: 'POST',
     body: data,

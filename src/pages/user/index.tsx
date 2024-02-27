@@ -25,7 +25,7 @@ import { setHelmet } from 'store/slices/helmet';
 import { onSaveProps } from 'components/imagePicker/imagePicker.styled';
 import TInput from 'components/input';
 import TSelect from 'components/select';
-import fetchDataWithCredential from 'utils/fetchDataWithCredential';
+import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
 import { USER_ENDPOINT } from 'constants/apiEndPoint';
 
 export type TMatchParamsTViewUser = {
@@ -70,7 +70,7 @@ const TViewUser = (props: RouteComponentProps<TMatchParamsTViewUser>) => {
     dispatch(setLoading(true));
     if (imageUrl) {
       dispatch(setLoading(true));
-      fetchDataWithCredential({
+      fetchDataWithoutCredential({
         url: USER_ENDPOINT.USER_BY_ID + _id,
         method: 'PATCH',
         body: { image: imageUrl, tokenUser: localStorage.getItem('tokenUser') },
@@ -120,7 +120,7 @@ const TViewUser = (props: RouteComponentProps<TMatchParamsTViewUser>) => {
   };
   const handleBanUser = () => {
     dispatch(setLoading(true));
-    fetchDataWithCredential({
+    fetchDataWithoutCredential({
       url: USER_ENDPOINT.BAN_USER + _id,
       method: 'POST',
       body: { tokenUser: localStorage.getItem('tokenUser') },
@@ -235,7 +235,7 @@ const TViewUser = (props: RouteComponentProps<TMatchParamsTViewUser>) => {
             initialValues={initialValue}
             onSubmit={(values) => {
               dispatch(setLoading(true));
-              fetchDataWithCredential({
+              fetchDataWithoutCredential({
                 url: USER_ENDPOINT.USER_BY_ID + _id,
                 method: 'PATCH',
                 body: { ...values, tokenUser: localStorage.getItem('tokenUser') },

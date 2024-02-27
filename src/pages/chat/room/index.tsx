@@ -19,6 +19,7 @@ import TMessage, { TMessageProps } from 'components/message';
 import { setHelmet } from 'store/slices/helmet';
 import TButton from 'components/button';
 import TEditor from 'components/CKEditor';
+import { CHAT_CHANNELS } from 'constants/socketChanel';
 
 export type TRoomProps = TBoxProps & {
   chatWrapperProps?: TBoxProps;
@@ -77,7 +78,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       },
       body: JSON.stringify({ tokenUser: localStorage.getItem('tokenUser') }),
     });
-    socket.emit('chat-room:user-leave', {
+    socket.emit(CHAT_CHANNELS.USER_LEAVE, {
       _id: roomId,
       username: currentUser?.fullName || currentUser?.account,
       userId: currentUser?._id || '',
@@ -89,7 +90,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       editorInstanceRef.current?.setData('');
       return;
     }
-    socket.emit('chat-room:user-chat', {
+    socket.emit(CHAT_CHANNELS.NEW_MESSAGE, {
       _id: roomId,
       message: messageToSend,
       userId: currentUserId,
@@ -137,11 +138,11 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       });
   }, []);
   useEffect(() => {
-    socket.on('chat-room-' + roomId + '-message', (data: TMessageProps) => {
+    socket.on(CHAT_CHANNELS.SEND_MESSAGE_IN_ROOM({roomId}), (data: TMessageProps) => {
       setMessages((messages) => [...messages, data]);
       handleNewMessage();
     });
-    socket.on('chat-room-leave-' + roomId, (data) => {
+    socket.on(CHAT_CHANNELS.LEAVE_CHAT_ROOM({roomId}), (data) => {
       setMessages((prewMessgage) => {
         const newMessage = [
           ...prewMessgage,
@@ -153,7 +154,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       });
       handleNewMessage();
     });
-    socket.on('chat-room-join-' + roomId, (data) => {
+    socket.on(CHAT_CHANNELS.JOIN_CHAT_ROOM({roomId}), (data) => {
       setMessages((prewMessgage) => {
         const newMessage = [
           ...prewMessgage,
@@ -166,9 +167,9 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       handleNewMessage();
     });
     return () => {
-      socket.off('chat-room-' + roomId + '-message');
-      socket.off('chat-room-join-' + roomId);
-      socket.off('chat-room-leave-' + roomId);
+      socket.off(CHAT_CHANNELS.SEND_MESSAGE_IN_ROOM({roomId}));
+      socket.off(CHAT_CHANNELS.LEAVE_CHAT_ROOM({roomId}));
+      socket.off(CHAT_CHANNELS.JOIN_CHAT_ROOM({roomId}));
     };
   }, []);
   useEffect(() => {
@@ -176,7 +177,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       return;
     }
     if (currentUserId) {
-      socket.emit('chat-room:user-connected', {
+      socket.emit(CHAT_CHANNELS.USER_CONNECTED, {
         _id: roomId,
         username: currentUser?.fullName || currentUser?.account,
         userId: currentUserId,

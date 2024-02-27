@@ -16,6 +16,7 @@ import union from 'lodash/union';
 import TButton from 'components/button';
 
 import { setLoading } from 'store/slices/common';
+import { CHAT_CHANNELS } from 'constants/socketChanel';
 
 const socket = io(process.env.REACT_APP_API_URL+'');
 
@@ -65,7 +66,7 @@ const TCreateChatRoom = ({ updateData, ...props }: TCreateChatRoomProps) => {
             })
             .then((res) => {
               dispatch(setLoading(false));
-              socket.emit('chat-room:updated', res);
+              socket.emit(CHAT_CHANNELS.NOTICE_CHATROOM_UPDATED_STATUS, res);
               setTimeout(() => {
                 history.push('/room-chat/' + res);
               }, 1000);

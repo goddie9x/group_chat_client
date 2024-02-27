@@ -17,6 +17,8 @@ import TCreateChatRoom, { TCreateChatRoomSchema } from './create';
 import { setHelmet } from 'store/slices/helmet';
 import { RootState } from 'store';
 import { setAlert } from 'store/slices/alert';
+import { ROOM_ENDPOINT } from 'constants/apiEndPoint';
+import { CHAT_CHANNELS } from 'constants/socketChanel';
 
 const socket = io(process.env.REACT_APP_API_URL+'');
 
@@ -44,7 +46,9 @@ const TChatRooms = () => {
   const currentUser = useSelector((state: RootState) => state.auth.userData);
 
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL+'/chat-room/?page=' + page)
+    const abortController = new AbortController();
+
+    fetch(ROOM_ENDPOINT.LIST_CHAT_ROOM_PER_PAGE + page, { signal: abortController.signal })
       .then((res) => {
         if (res.status >= 400) {
           throw new Error(res.statusText);
@@ -55,6 +59,7 @@ const TChatRooms = () => {
         const newRooms = unionBy(rooms, res, '_id');
         setRooms(newRooms);
       });
+    return () => abortController.abort();
   }, [page]);
   useEffect(() => {
     dispatch(setHelmet({ title: t('group_chat') }));
@@ -67,7 +72,9 @@ const TChatRooms = () => {
     return () => window.removeEventListener('scroll', scrollLoadMoreRoom);
   });
   useEffect(() => {
-    fetch(process.env.REACT_APP_API_URL+'/chat-room/search?search=' + searchValue)
+    const abortController = new AbortController();
+
+    fetch(ROOM_ENDPOINT.FIND_CHAT_ROOM + searchValue, { signal: abortController.signal })
       .then((res) => {
         if (res.status >= 400) {
           throw new Error(res.statusText);
@@ -77,12 +84,13 @@ const TChatRooms = () => {
       .then((res) => {
         setOptionsSearch(res);
       });
+    return () => abortController.abort();
   }, [searchValue]);
 
   useEffect(() => {
-    socket.on('chat-room:update', () => {
+    socket.on(CHAT_CHANNELS.REQUEST_UPDATE_CHATROOM, () => {
       setTimeout(() => {
-        fetch(process.env.REACT_APP_API_URL+'/chat-room/?reload=1&page=' + page)
+        fetch(ROOM_ENDPOINT.FRESH_LIST_CHAT_ROOM_PER_PAGE + page)
           .then((res) => {
             if (res.status >= 400) {
               throw new Error(res.statusText);
@@ -95,7 +103,7 @@ const TChatRooms = () => {
       }, 1000);
     });
     return () => {
-      socket.off('chat-room:update');
+      socket.off(CHAT_CHANNELS.REQUEST_UPDATE_CHATROOM);
     };
   }, []);
   return (

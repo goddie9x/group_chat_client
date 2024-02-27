@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { setAlert } from 'store/slices/alert';
 import { setLoading } from 'store/slices/common';
+import { CHAT_CHANNELS } from 'constants/socketChanel';
 
 export type TRoomItemProps = TRoomsProps & {
   onEdit?: (room: TCreateChatRoomSchema) => void;
@@ -70,7 +71,7 @@ const TRoomItem = ({ _id, topic, maximum, creater, tags, users, createdAt, onEdi
             title: t('success'),
           }),
         );
-        socket.emit('chat-room:updated','delete');
+        socket.emit(CHAT_CHANNELS.NOTICE_CHATROOM_UPDATED_STATUS,'delete');
       })
       .catch(() => {
         dispatch(setLoading(false));

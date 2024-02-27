@@ -1,10 +1,18 @@
-type fetchDataWithCredentialProps = {
+type fetchDataWithoutCredentialProps = {
   url: string;
   method?: string;
-  body?: unknown ;
+  body?: unknown;
 };
 
-const fetchDataWithCredential = ({ url, method, body }: fetchDataWithCredentialProps) =>
+const fetchDataWithoutCredential = ({ url, method, body }: fetchDataWithoutCredentialProps) =>
+  fetch(url, {
+    method: method ?? 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+const fetchDataWithCredential = ({ url, method, body }: fetchDataWithoutCredentialProps) =>
   fetch(url, {
     method: method ?? 'GET',
     credentials: 'include',
@@ -13,5 +21,5 @@ const fetchDataWithCredential = ({ url, method, body }: fetchDataWithCredentialP
     },
     body: JSON.stringify(body),
   });
-
-export default fetchDataWithCredential;
+export default fetchDataWithoutCredential;
+export { fetchDataWithCredential };
