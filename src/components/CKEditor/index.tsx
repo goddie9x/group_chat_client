@@ -22,9 +22,9 @@ function TEditor({ initData,data, containerProps, config, eventHandler }: TEdito
         initData={initData}
         data={data}
         config={{
-          filebrowserBrowseUrl: 'https://te11.herokuapp.com/images',
+          filebrowserBrowseUrl: process.env.REACT_APP_CURRENT_URL+'/images',
           filebrowserUploadMethod: 'form',
-          filebrowserUploadUrl: 'https://te11api.herokuapp.com/cloudinary-upload',
+          filebrowserUploadUrl: process.env.REACT_APP_API_URL+'/cloudinary-upload',
           image_previewText: t('no_image_selected'),
           toolbarCanCollapse: true,
           ...config,

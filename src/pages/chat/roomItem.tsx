@@ -31,7 +31,7 @@ export type TRoomItemProps = TRoomsProps & {
   onEdit?: (room: TCreateChatRoomSchema) => void;
 };
 
-const socket = io('https://te11api.herokuapp.com');
+const socket = io(process.env.REACT_APP_API_URL+'');
 
 const TRoomItem = ({ _id, topic, maximum, creater, tags, users, createdAt, onEdit }: TRoomItemProps) => {
   const [openSetting, setOpenSetting] = useState(false);
@@ -48,7 +48,7 @@ const TRoomItem = ({ _id, topic, maximum, creater, tags, users, createdAt, onEdi
 
   const handleDeleteRoom = () => {
     dispatch(setLoading(true));
-    fetch('https://te11api.herokuapp.com/chat-room/delete/' + _id, {
+    fetch(process.env.REACT_APP_API_URL+'/chat-room/delete/' + _id, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

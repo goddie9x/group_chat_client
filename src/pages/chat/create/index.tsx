@@ -17,7 +17,7 @@ import TButton from 'components/button';
 
 import { setLoading } from 'store/slices/common';
 
-const socket = io('https://te11api.herokuapp.com');
+const socket = io(process.env.REACT_APP_API_URL+'');
 
 export type TCreateChatRoomSchema = {
   topic?: string;
@@ -50,7 +50,7 @@ const TCreateChatRoom = ({ updateData, ...props }: TCreateChatRoomProps) => {
         onSubmit={(values) => {
           const { maximum, tags } = values;
           dispatch(setLoading(true));
-          fetch('https://te11api.herokuapp.com/chat-room/create', {
+          fetch(process.env.REACT_APP_API_URL+'/chat-room/create', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

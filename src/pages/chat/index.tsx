@@ -18,7 +18,7 @@ import { setHelmet } from 'store/slices/helmet';
 import { RootState } from 'store';
 import { setAlert } from 'store/slices/alert';
 
-const socket = io('https://te11api.herokuapp.com');
+const socket = io(process.env.REACT_APP_API_URL+'');
 
 export type userProps = { username: string; userId: string; avatar: string };
 
@@ -44,7 +44,7 @@ const TChatRooms = () => {
   const currentUser = useSelector((state: RootState) => state.auth.userData);
 
   useEffect(() => {
-    fetch('https://te11api.herokuapp.com/chat-room/?page=' + page)
+    fetch(process.env.REACT_APP_API_URL+'/chat-room/?page=' + page)
       .then((res) => {
         if (res.status >= 400) {
           throw new Error(res.statusText);
@@ -67,7 +67,7 @@ const TChatRooms = () => {
     return () => window.removeEventListener('scroll', scrollLoadMoreRoom);
   });
   useEffect(() => {
-    fetch('https://te11api.herokuapp.com/chat-room/search?search=' + searchValue)
+    fetch(process.env.REACT_APP_API_URL+'/chat-room/search?search=' + searchValue)
       .then((res) => {
         if (res.status >= 400) {
           throw new Error(res.statusText);
@@ -82,7 +82,7 @@ const TChatRooms = () => {
   useEffect(() => {
     socket.on('chat-room:update', () => {
       setTimeout(() => {
-        fetch('https://te11api.herokuapp.com/chat-room/?reload=1&page=' + page)
+        fetch(process.env.REACT_APP_API_URL+'/chat-room/?reload=1&page=' + page)
           .then((res) => {
             if (res.status >= 400) {
               throw new Error(res.statusText);

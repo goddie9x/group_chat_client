@@ -42,9 +42,4 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
     },
     mode: 'development',
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env.API_URL': 'http://localhost:3001',
-        }),
-    ],
 };

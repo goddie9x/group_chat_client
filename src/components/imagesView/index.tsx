@@ -36,7 +36,7 @@ const TImagesView = ({ onSelected, deleteable, ...props }: TImagesViewProps) => 
 
   useEffect(() => {
     dispatch(setLoading(true));
-    fetch('https://te11api.herokuapp.com/images?page=' + page)
+    fetch(process.env.REACT_APP_API_URL+'/images?page=' + page)
       .then((res) => {
         dispatch(setLoading(false));
         if (res.status >= 400) {
@@ -86,7 +86,7 @@ const TImagesView = ({ onSelected, deleteable, ...props }: TImagesViewProps) => 
                     e.preventDefault();
                     e.stopPropagation();
                     dispatch(setLoading(true));
-                    fetch('https://te11api.herokuapp.com/images/' + _id, {
+                    fetch(process.env.REACT_APP_API_URL+'/images/' + _id, {
                       method: 'DELETE',
                       headers: {
                         'Content-Type': 'application/json',

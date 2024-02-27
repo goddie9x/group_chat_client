@@ -61,7 +61,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
   };
   const unbanUser = (UserID: string) => {
     dispatch(setLoading(true));
-    fetch('https://te11api.herokuapp.com/user/unban/' + UserID, {
+    fetch(process.env.REACT_APP_API_URL+'/user/unban/' + UserID, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
   const banUser = (UserID: string) => {
     dispatch(setLoading(true));
     const path = currentPage == 'banned/' ? 'delete/' : 'ban/';
-    fetch('https://te11api.herokuapp.com/user/' + path + UserID, {
+    fetch(process.env.REACT_APP_API_URL+'/user/' + path + UserID, {
       method: currentPage == 'banned/' ? 'DELETE/' : 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
     switch (actionSelected) {
       case 'delete':
         dispatch(setLoading(true));
-        fetch('https://te11api.herokuapp.com/user/handleMultiAction', {
+        fetch(process.env.REACT_APP_API_URL+'/user/handleMultiAction', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -159,7 +159,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
         break;
       case 'unban':
         dispatch(setLoading(true));
-        fetch('https://te11api.herokuapp.com/user/handleMultiAction', {
+        fetch(process.env.REACT_APP_API_URL+'/user/handleMultiAction', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -188,7 +188,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
         break;
       case 'forceDelete':
         dispatch(setLoading(true));
-        fetch('https://te11api.herokuapp.com/user/handleMultiAction', {
+        fetch(process.env.REACT_APP_API_URL+'/user/handleMultiAction', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -219,7 +219,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
         break;
       case 'editRole':
         dispatch(setLoading(true));
-        fetch('https://te11api.herokuapp.com/user/handleMultiAction', {
+        fetch(process.env.REACT_APP_API_URL+'/user/handleMultiAction', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -252,7 +252,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
   };
   const handleEditRole = (_id: string) => {
     dispatch(setLoading(true));
-    fetch('https://te11api.herokuapp.com/user/edit-role/' + _id, {
+    fetch(process.env.REACT_APP_API_URL+'/user/edit-role/' + _id, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -355,7 +355,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
       history.push('/no_permissions');
     }
     const urlGeTUsersManager =
-      'https://te11api.herokuapp.com/user/' + currentPage + '?page=' + page + '&perPage=' + rowsPerPage;
+      process.env.REACT_APP_API_URL+'/user/' + currentPage + '?page=' + page + '&perPage=' + rowsPerPage;
     const tokenUser = localStorage.getItem('tokenUser');
     let isSubscribed = true;
 

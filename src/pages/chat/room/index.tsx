@@ -27,7 +27,7 @@ export type TRoomProps = TBoxProps & {
   isChatToUser?: boolean;
 };
 
-const socket = io('https://te11api.herokuapp.com');
+const socket = io(process.env.REACT_APP_API_URL+'');
 
 const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps) => {
   const [messages, setMessages] = useState<Array<TMessageProps> | []>([]);
@@ -37,7 +37,6 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
   const currentUser = useSelector((state: RootState) => state.auth.userData);
   const chatWindow = useRef<HTMLDivElement>(null);
   const editorInstanceRef = useRef<CKEditorInstance | null>(null);
-  console.log(currentUser);
   const { t } = useTranslation();
   const history = useHistory();
   const currentUserId = currentUser?._id || '';
@@ -71,7 +70,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
   };
 
   const handleUnloadEvent = () => {
-    fetch('https://te11api.herokuapp.com/chat-room/leave/' + roomId, {
+    fetch(process.env.REACT_APP_API_URL+'/chat-room/leave/' + roomId, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -85,7 +84,6 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
     });
   };
   const handleSendMessage = () => {
-    console.log('Send message');
     const messageToSend = editorInstanceRef.current?.getData();
     if (messageToSend.trim() === '') {
       editorInstanceRef.current?.setData('');
@@ -114,7 +112,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
   };
   useEffect(() => {
     dispatch(setHelmet({ title: t('chat_room') }));
-    fetch('https://te11api.herokuapp.com/chat-room/join/' + roomId, {
+    fetch(process.env.REACT_APP_API_URL+'/chat-room/join/' + roomId, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

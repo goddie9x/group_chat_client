@@ -1,4 +1,4 @@
-const API_HOST = process.env.NODE_ENV;
+const API_HOST = process.env.REACT_APP_API_URL;
 const USER_ENDPOINT = {
   LOGIN: API_HOST + '/user/login',
   REGISTER: API_HOST + '/user/register',
@@ -9,4 +9,4 @@ const USER_ENDPOINT = {
   BAN_USER: API_HOST + '/user/ban/',
 };
 
-export { USER_ENDPOINT };
+export { API_HOST, USER_ENDPOINT };

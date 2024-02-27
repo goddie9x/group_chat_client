@@ -61,7 +61,7 @@ const TResetPassword = ({ match }: RouteComponentProps<TMatchParamsTResetPasswor
         const { password } = values;
 
         dispatch(setLoading(true));
-        fetch('https://te11api.herokuapp.com/user/reset-password/' + tokenRestore, {
+        fetch(process.env.REACT_APP_API_URL+'/user/reset-password/' + tokenRestore, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

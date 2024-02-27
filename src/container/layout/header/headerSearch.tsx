@@ -12,7 +12,7 @@ const THeaderSearch = ()=>{
     const dispatch = useDispatch();
     useEffect(()=>{
         dispatch(setLoading(true));
-        fetch('https://te11api.herokuapp.com/search/'+query)
+        fetch(process.env.REACT_APP_API_URL+'/search/'+query)
         .then(res=>{
             if (res.status >= 400){
                 throw new Error('Bad response from server');
