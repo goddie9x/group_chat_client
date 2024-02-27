@@ -1,7 +1,6 @@
 import amongus from './amongus';
 import spring from './spring';
 import winter from './winter';
-import newEve from './newEve';
 
 const getParticlesTheme = (bg: string) => {
   const currentMonth = new Date().getMonth();
@@ -10,11 +9,10 @@ const getParticlesTheme = (bg: string) => {
     case 0:
     case 1:
     case 2: 
-      return newEve(bg);
     case 3:
+      return spring(bg);
     case 4:
     case 5:
-      return spring(bg);
     case 6:
     case 7:
     case 8:

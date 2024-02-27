@@ -444,6 +444,7 @@ const TViewUser = (props: RouteComponentProps<TMatchParamsTViewUser>) => {
                   <TSelect
                     label={t('gender')}
                     name="gender"
+                    variant="outlined"
                     onChange={handleChange}
                     value={values.gender}
                     formControlProps={{

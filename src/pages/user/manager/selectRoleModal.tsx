@@ -22,6 +22,7 @@ const TSelectRoleModal = ({ isOpen, currenRole, onClose, onSelect }: TSelectRole
     <TModal open={isOpen} title={t('select_role')} onClose={onClose}>
       <TBox textalign="center">
         <TSelect
+          variant="outlined"
           label={t('select_role')}
           value={currenRole || 3}
           onChange={(e) => onSelect(e.target.value as number)}

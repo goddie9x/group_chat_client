@@ -1,9 +1,9 @@
 import React from 'react';
 import clsx from 'clsx';
-import { useSwitch, UseSwitchProps } from '@mui/material';
+import { useSwitch,UseSwitchParameters } from '@mui/base/useSwitch';
 import {SwitchRoot, SwitchInput, SwitchThumb, SwitchTrack, SwitchThumbDarkMode } from './switch.styled';
 
-export type TUseSwitchProps = UseSwitchProps&{
+export type TUseSwitchProps = UseSwitchParameters&{
     height?: number;
     darkmode?: boolean;
 };

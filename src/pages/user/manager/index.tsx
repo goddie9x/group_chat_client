@@ -401,6 +401,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
           <TFormControlLabel control={<Checkbox onChange={handleSelectAll} />} label={t('select_all') as string} />
           <TSelect
             marginLeft={3}
+            variant="outlined"
             value={actionSelected}
             onChange={(e) => {
               setActionSelected(e.target.value as string);

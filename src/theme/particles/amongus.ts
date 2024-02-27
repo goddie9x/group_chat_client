@@ -12,7 +12,6 @@ const amongus = (bg: string) => {
       opacity: 1,
     },
     backgroundMask: {
-      composite: 'destination-out',
       cover: {
         color: {
           value: '#fff',

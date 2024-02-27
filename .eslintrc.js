@@ -34,11 +34,13 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': ['error'],
         'comma-dangle': ['error', 'always-multiline'],
         '@typescript-eslint/explicit-module-boundary-types': 'off',
-        'max-len': [1, 300, 2],
+        'max-len': [1, 800, 2],
         'generator-star-spacing': 'off',
         'space-before-function-paren': 'off',
         '@typescript-eslint/prefer-as-const': 'off',
         'no-duplicate-case': 'warn',
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': 'off',
         'react/self-closing-comp': [
             'error',
             {

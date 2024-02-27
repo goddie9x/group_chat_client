@@ -8,10 +8,10 @@ import { setDarkMode } from 'store/slices/common';
 
 const TSwitchDarkMode = (props: TUseSwitchProps) => {
   const isDarkMode = useSelector((state: RootState) => state.common.isDarkMode);
-
+  const {onChange,...newProps } = props;
   const dispatch = useDispatch();
 
-  return <TSwitch darkmode checked={isDarkMode} onChange={() => dispatch(setDarkMode(!isDarkMode))} {...props} />;
+  return <TSwitch darkmode checked={isDarkMode} onChange={() => dispatch(setDarkMode(!isDarkMode))} {...newProps} />;
 };
 
 export default TSwitchDarkMode;

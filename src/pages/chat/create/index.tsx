@@ -100,6 +100,7 @@ const TCreateChatRoom = ({ updateData, ...props }: TCreateChatRoomProps) => {
               </TGrid>
               <TGrid item xs={12} md={4}>
                 <TSelect
+                  variant="outlined"
                   label={t('maximum_people')}
                   name="maximum"
                   onChange={handleChange}
