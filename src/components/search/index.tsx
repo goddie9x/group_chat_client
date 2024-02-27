@@ -92,28 +92,29 @@ const TSearch = ({ options, renderOption, onClickSearch, onChangeValue, hideMobi
         maxHeight="50vh"
         overflow="auto"
       >
-        {options.map((option, index) => (
-          <TLink key={index} href={option.url}>
-            <TSearchResult container height={6} lineHeight="32px" padding={1}>
-              {renderOption ? (
-                renderOption(option.value, option.type)
-              ) : (
-                <>
-                  <TGrid item xs={option.type ? 9 : 12}>
-                    {option.value}
-                  </TGrid>
-                  {option.type && (
-                    <TGrid item xs={3}>
-                      {option.type}
+        {options&&options.length > 0 ? (
+          options.map((option, index) => (
+            <TLink key={index} href={option.url}>
+              <TSearchResult container height={6} lineHeight="32px" padding={1}>
+                {renderOption ? (
+                  renderOption(option.value, option.type)
+                ) : (
+                  <>
+                    <TGrid item xs={option.type ? 9 : 12}>
+                      {option.value}
                     </TGrid>
-                  )}
-                </>
-              )}
-            </TSearchResult>
-          </TLink>
-        ))}
-        {options.length === 0 && (
-          <TSearchResult container height={6} lineHeight="32px" padding={1}>
+                    {option.type && (
+                      <TGrid item xs={3}>
+                        {option.type}
+                      </TGrid>
+                    )}
+                  </>
+                )}
+              </TSearchResult>
+            </TLink>
+          ))
+        ) : (
+          <TSearchResult container height={6} color="blue" lineHeight="32px" padding={1}>
             {t('no_data_found')}
           </TSearchResult>
         )}
