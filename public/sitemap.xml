@@ -7,35 +7,35 @@
 >
 <!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
   <url>
-    <loc>https://te11.herokuapp.com/</loc>
+    <loc>https://TChat.herokuapp.com/</loc>
     <changefreq>weekly</changefreq>
   </url>
   <url>
-      <loc>https://te11.herokuapp.com/posts</loc>
+      <loc>https://TChat.herokuapp.com/posts</loc>
       <changefreq>weekly</changefreq>
    </url>
    <url>
-      <loc>https://te11.herokuapp.com/schedules</loc>
+      <loc>https://TChat.herokuapp.com/schedules</loc>
       <changefreq>weekly</changefreq>
    </url>
    <url>
-      <loc>https://te11.herokuapp.com/group-chat</loc>
+      <loc>https://TChat.herokuapp.com/group-chat</loc>
       <changefreq>weekly</changefreq>
    </url>
    <url>
-      <loc>https://te11.herokuapp.com/dir</loc>
+      <loc>https://TChat.herokuapp.com/dir</loc>
       <changefreq>weekly</changefreq>
    </url>
    <url>
-      <loc>https://te11.herokuapp.com/user/profile/616a9fe50bd43d9e2ee69689</loc>
+      <loc>https://TChat.herokuapp.com/user/profile/616a9fe50bd43d9e2ee69689</loc>
       <changefreq>weekly</changefreq>
    </url>
    <url>
-      <loc>https://te11.herokuapp.com/user/profile/61e958d54624c56bf3d3197a</loc>
+      <loc>https://TChat.herokuapp.com/user/profile/61e958d54624c56bf3d3197a</loc>
       <changefreq>weekly</changefreq>
    </url>
    <url>
-      <loc>https://te11.herokuapp.com/user/profile/62371717796e7d7e79145a96</loc>
+      <loc>https://TChat.herokuapp.com/user/profile/62371717796e7d7e79145a96</loc>
       <changefreq>weekly</changefreq>
    </url>
 </urlset>

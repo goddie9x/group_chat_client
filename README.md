@@ -9,7 +9,7 @@ In the project directory, you can run:
 ### `npm start`
 
 Runs the app in the development mode.\
-Open [https://te11.herokuapp.com](https://te11.herokuapp.com) to view it in the browser.
+Open [https://TChat.herokuapp.com](https://TChat.herokuapp.com) to view it in the browser.
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.

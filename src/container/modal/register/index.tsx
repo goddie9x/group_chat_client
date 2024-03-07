@@ -52,7 +52,7 @@ const TRegisterModal = () => {
   };
 
   return (
-    <TModal open={isOpenRegisterModal} title={t('register_to_te11')} onClose={handleCloseRegisterModal}>
+    <TModal open={isOpenRegisterModal} title={t('register_to_TChat')} onClose={handleCloseRegisterModal}>
       <Formik
         initialValues={initialValue}
         onSubmit={(values, actions) => {

@@ -12,6 +12,7 @@ import TIconButton from 'components/iconButton';
 import { TBoxProps } from 'components/box/box.styled';
 import TRoomWrapper from './room.styled';
 import TTypography from 'components/typography';
+import TVideoCall from 'container/videoCall';
 
 import { RootState } from 'store';
 import { TRoomsProps } from '..';
@@ -20,6 +21,9 @@ import { setHelmet } from 'store/slices/helmet';
 import TButton from 'components/button';
 import TEditor from 'components/CKEditor';
 import { CHAT_CHANNELS } from 'constants/socketChanel';
+import { ROOM_ENDPOINT } from 'constants/apiEndPoint';
+import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
+import TGrid from 'components/grid';
 
 export type TRoomProps = TBoxProps & {
   chatWrapperProps?: TBoxProps;
@@ -28,7 +32,7 @@ export type TRoomProps = TBoxProps & {
   isChatToUser?: boolean;
 };
 
-const socket = io(process.env.REACT_APP_API_URL+'');
+const socket = io(process.env.REACT_APP_API_URL + '');
 
 const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps) => {
   const [messages, setMessages] = useState<Array<TMessageProps> | []>([]);
@@ -71,15 +75,14 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
   };
 
   const handleUnloadEvent = () => {
-    fetch(process.env.REACT_APP_API_URL+'/chat-room/leave/' + roomId, {
+    fetchDataWithoutCredential({
+      url: ROOM_ENDPOINT.LEAVE_ROOM + roomId,
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ tokenUser: localStorage.getItem('tokenUser') }),
+      body: { tokenUser: localStorage.getItem('tokenUser') },
     });
+
     socket.emit(CHAT_CHANNELS.USER_LEAVE, {
-      _id: roomId,
+      roomId,
       username: currentUser?.fullName || currentUser?.account,
       userId: currentUser?._id || '',
     });
@@ -107,18 +110,16 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
   };
   const handleEnterEvent = (event: CKEditorEventPayload<'key'>) => {
     const evtData = event.data;
-    if (evtData&& evtData.keyCode == 13) {
-        handleSendMessage();
+    if (evtData && evtData.keyCode == 13) {
+      handleSendMessage();
     }
   };
   useEffect(() => {
     dispatch(setHelmet({ title: t('chat_room') }));
-    fetch(process.env.REACT_APP_API_URL+'/chat-room/join/' + roomId, {
+    fetchDataWithoutCredential({
+      url: ROOM_ENDPOINT.JOIN_ROOM + roomId,
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ tokenUser: localStorage.getItem('tokenUser') }),
+      body: { tokenUser: localStorage.getItem('tokenUser') },
     })
       .then((res) => {
         if (res.status >= 400) {
@@ -138,11 +139,11 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       });
   }, []);
   useEffect(() => {
-    socket.on(CHAT_CHANNELS.SEND_MESSAGE_IN_ROOM({roomId}), (data: TMessageProps) => {
+    socket.on(CHAT_CHANNELS.SEND_MESSAGE_IN_ROOM({ roomId }), (data: TMessageProps) => {
       setMessages((messages) => [...messages, data]);
       handleNewMessage();
     });
-    socket.on(CHAT_CHANNELS.LEAVE_CHAT_ROOM({roomId}), (data) => {
+    socket.on(CHAT_CHANNELS.LEAVE_CHAT_ROOM({ roomId }), (data) => {
       setMessages((prewMessgage) => {
         const newMessage = [
           ...prewMessgage,
@@ -154,7 +155,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       });
       handleNewMessage();
     });
-    socket.on(CHAT_CHANNELS.JOIN_CHAT_ROOM({roomId}), (data) => {
+    socket.on(CHAT_CHANNELS.JOIN_CHAT_ROOM({ roomId }), (data) => {
       setMessages((prewMessgage) => {
         const newMessage = [
           ...prewMessgage,
@@ -167,9 +168,9 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       handleNewMessage();
     });
     return () => {
-      socket.off(CHAT_CHANNELS.SEND_MESSAGE_IN_ROOM({roomId}));
-      socket.off(CHAT_CHANNELS.LEAVE_CHAT_ROOM({roomId}));
-      socket.off(CHAT_CHANNELS.JOIN_CHAT_ROOM({roomId}));
+      socket.off(CHAT_CHANNELS.SEND_MESSAGE_IN_ROOM({ roomId }));
+      socket.off(CHAT_CHANNELS.LEAVE_CHAT_ROOM({ roomId }));
+      socket.off(CHAT_CHANNELS.JOIN_CHAT_ROOM({ roomId }));
     };
   }, []);
   useEffect(() => {
@@ -209,99 +210,108 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       <TTypography variant="h3" color="primary" textalign="center" marginY={2}>
         {roomInfo?.topic}
       </TTypography>
-      <TRoomWrapper
-        display="flex"
-        flexDirection="column"
-        {...chatWrapperProps}
-        height="70vh"
-        overflow="auto"
-        position="relative"
-        ref={chatWindow}
-      >
-        {messages.map((message, index) => {
-          return (
-            <TMessage
-              isCurrentUser={message.userId === currentUserId}
-              hideAvatar={index > 1 && message.userId == messages[index - 1].userId}
-              {...message}
-              key={index}
-            />
-          );
-        })}
-        {activeScrollToBottom && (
-          <TBox position="sticky" bottom={16} marginRight={2} textalign="right" animation="bounce 3s infinite">
-            {haveNewMessage ? (
-              <TButton
-                padding={0}
-                onClick={() => {
-                  if (chatWindow && chatWindow.current) {
-                    chatWindow.current.scrollTop = chatWindow.current.scrollHeight;
-                  }
-                }}
-                variant="outlined"
-              >
-                <TTypography variant="body2" color="primary" display="flex" alignItems="center">
-                  <KeyboardArrowDownIcon />
-                  {t('have_new_message')}
-                </TTypography>
-              </TButton>
-            ) : (
-              <TIconButton
-                onClick={() => {
-                  if (chatWindow && chatWindow.current) {
-                    chatWindow.current.scrollTop = chatWindow.current.scrollHeight;
-                  }
-                }}
-                width={1.5}
-                height={1.5}
-              >
-                <KeyboardArrowDownIcon />
-              </TIconButton>
+      <TGrid container spacing={2}>
+        <TGrid item xs={12} sm={6} md={8}>
+          {roomInfo && <TVideoCall ownerId={roomInfo.creator.userId} roomId={roomInfo!._id} />}
+        </TGrid>
+        <TGrid item xs={12} sm={6} md={4}>
+          <TRoomWrapper
+            display="flex"
+            flexDirection="column"
+            {...chatWrapperProps}
+            height="70vh"
+            overflow="auto"
+            position="relative"
+            ref={chatWindow}
+          >
+            {messages.map((message, index) => {
+              return (
+                <TMessage
+                  isCurrentUser={message.userId === currentUserId}
+                  hideAvatar={index > 1 && message.userId == messages[index - 1].userId}
+                  {...message}
+                  key={index}
+                />
+              );
+            })}
+            {activeScrollToBottom && (
+              <TBox position="sticky" bottom={16} marginRight={2} textalign="right" animation="bounce 3s infinite">
+                {haveNewMessage ? (
+                  <TButton
+                    padding={0}
+                    onClick={() => {
+                      if (chatWindow && chatWindow.current) {
+                        chatWindow.current.scrollTop = chatWindow.current.scrollHeight;
+                      }
+                    }}
+                    variant="outlined"
+                  >
+                    <TTypography variant="body2" color="primary" display="flex" alignItems="center">
+                      <KeyboardArrowDownIcon />
+                      {t('have_new_message')}
+                    </TTypography>
+                  </TButton>
+                ) : (
+                  <TIconButton
+                    onClick={() => {
+                      if (chatWindow && chatWindow.current) {
+                        chatWindow.current.scrollTop = chatWindow.current.scrollHeight;
+                      }
+                    }}
+                    width={1.5}
+                    height={1.5}
+                  >
+                    <KeyboardArrowDownIcon />
+                  </TIconButton>
+                )}
+              </TBox>
             )}
+          </TRoomWrapper>
+          <TBox position="relative" display="flex" flexWrap="nowrap">
+            <TEditor
+              containerProps={{ width: '100%' }}
+              config={{
+                toolbar: [
+                  ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', 'Undo', 'Redo'],
+                  ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'CopyFormatting', 'RemoveFormat'],
+                  ['Styles', 'Format', 'Font', 'FontSize', 'TextColor', 'BGColor'],
+                  [
+                    'NumberedList',
+                    'BulletedList',
+                    'Outdent',
+                    'Indent',
+                    'Blockquote',
+                    'CreateDiv',
+                    'JustifyLeft',
+                    'JustifyCenter',
+                    'JustifyRight',
+                    'JustifyBlock',
+                    'BidiLtr',
+                    'BidiRtl',
+                  ],
+                  ['Image', 'HorizontalRule', 'Smiley', 'SpecialChar', 'Emoji', 'PageBreak'],
+                  ['Find', 'Replace', 'SelectAll'],
+                ],
+                autocomplete: true,
+                extraPlugins: ['colorbutton', 'autocomplete', 'emoji', 'find', 'smiley'],
+                disallowedContent: 'script; *[on*]',
+                height: 80,
+              }}
+              eventHandler={{
+                onKey: (evt: CKEditorEventPayload<'key'>) => {
+                  editorInstanceRef.current = evt.editor;
+                  handleEnterEvent(evt);
+                },
+              }}
+            />
+            <TBox position="absolute" top={1} right={1}>
+              <TIconButton variant="extended" shape="curved" onClick={() => handleSendMessage()}>
+                <SendIcon />
+              </TIconButton>
+            </TBox>
           </TBox>
-        )}
-      </TRoomWrapper>
-      <TBox display="flex" flexWrap="nowrap">
-        <TEditor
-          containerProps={{ width: '100%' }}
-          config={{
-            toolbar: [
-              ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', 'Undo', 'Redo'],
-              ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'CopyFormatting', 'RemoveFormat'],
-              ['Styles', 'Format', 'Font', 'FontSize', 'TextColor', 'BGColor'],
-              [
-                'NumberedList',
-                'BulletedList',
-                'Outdent',
-                'Indent',
-                'Blockquote',
-                'CreateDiv',
-                'JustifyLeft',
-                'JustifyCenter',
-                'JustifyRight',
-                'JustifyBlock',
-                'BidiLtr',
-                'BidiRtl',
-              ],
-              ['Image', 'HorizontalRule', 'Smiley', 'SpecialChar', 'Emoji', 'PageBreak'],
-              ['Find', 'Replace', 'SelectAll'],
-            ],
-            autocomplete: true,
-            extraPlugins: ['colorbutton', 'autocomplete', 'emoji', 'find', 'smiley'],
-            disallowedContent: 'script; *[on*]',
-            height: 80,
-          }}
-          eventHandler={{
-            onKey: (evt: CKEditorEventPayload<'key'>) => {
-              editorInstanceRef.current = evt.editor;
-              handleEnterEvent(evt);
-            },
-          }}
-        />
-        <TIconButton variant="extended" shape="curved" onClick={() => handleSendMessage()}>
-          <SendIcon />
-        </TIconButton>
-      </TBox>
+        </TGrid>
+      </TGrid>
     </TBox>
   );
 };

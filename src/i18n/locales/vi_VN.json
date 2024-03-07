@@ -13,8 +13,8 @@
     "second": "Giây",
     "language": "Ngôn ngữ",
     "contact": "Liên hệ",
-    "login_to_te11": "Đăng nhập vào Te11",
-    "register_to_te11": "Đăng ký vào Te11",
+    "login_to_TChat": "Đăng nhập vào TChat",
+    "register_to_TChat": "Đăng ký vào TChat",
     "login": "Đăng nhập",
     "create_by": "Tạo bởi: ",
     "create_at": "Thời gian tạo: ",
@@ -62,7 +62,7 @@
     "user_role": "quyền người dùng",
     "user_status": "Trạng thái người dùng",
     "get_connected_with_me_on_social_networks": "Kết nối với tôi trên các mạng xã hội:",
-    "copyright": "© 2022 TE11 đây là trang web thử nghiệm, tạo bởi Hoàng Tâm",
+    "copyright": "© 2022 TChat đây là trang web thử nghiệm, tạo bởi Hoàng Tâm",
     "page_not_found": "Không tìm thấy nội dung này",
     "main_quote": "Tôi không phải đặc biệt, tôi chỉ là khác biệt thôi",
     "open_menu": "Mở menu",
@@ -283,5 +283,9 @@
     "edit_role": "Sửa quyền",
     "select_role": "Chọn quyền",
     "user_edit_role_successfully": "Chỉnh sửa quyền người dùng thành công",
-    "user_edit_role_failed": "Chỉnh sửa quyền người dùng thất bại"
+    "user_edit_role_failed": "Chỉnh sửa quyền người dùng thất bại",
+    "camera":"Máy ảnh",
+    "microphone":"Microphone",
+    "turn_on_target":"Bật {{target}}",
+    "turn_off_target":"Tắt {{target}}"
 }

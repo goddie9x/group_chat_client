@@ -34,7 +34,7 @@ export type TRoomItemProps = TRoomsProps & {
 
 const socket = io(process.env.REACT_APP_API_URL+'');
 
-const TRoomItem = ({ _id, topic, maximum, creater, tags, users, createdAt, onEdit }: TRoomItemProps) => {
+const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdit }: TRoomItemProps) => {
   const [openSetting, setOpenSetting] = useState(false);
 
   const totalUsers = users.length;
@@ -45,7 +45,7 @@ const TRoomItem = ({ _id, topic, maximum, creater, tags, users, createdAt, onEdi
   const dispatch = useDispatch();
   const history = useHistory();
   const currentUser = useSelector((state: RootState) => state.auth.userData);
-  const isCreater = creater.userId === currentUser?._id;
+  const isCreator = creator.userId === currentUser?._id;
 
   const handleDeleteRoom = () => {
     dispatch(setLoading(true));
@@ -89,7 +89,7 @@ const TRoomItem = ({ _id, topic, maximum, creater, tags, users, createdAt, onEdi
       <TCard>
         <TGrid container alignItems="center" padding={1}>
           <TGrid item xs={2}>
-            <TImage src={creater.avatar || TDefaultImage} width={40} height={40} borderradius={1000} />
+            <TImage src={creator.avatar || TDefaultImage} width={40} height={40} borderradius={1000} />
           </TGrid>
           <TGrid item xs={8} overflow="hidden">
             {tags && (
@@ -117,16 +117,16 @@ const TRoomItem = ({ _id, topic, maximum, creater, tags, users, createdAt, onEdi
                   {t('group_owner')}
                 </TTypography>
                 <TImage
-                  src={creater.avatar || TDefaultImage}
+                  src={creator.avatar || TDefaultImage}
                   width={50}
                   height={50}
                   borderradius={1000}
                   cursor="not-allowed"
                 />
                 <TTypography variant="body1" cursor="not-allowed" margin={1}>
-                  {creater.username}
+                  {creator.username}
                 </TTypography>
-                {isCreater ? (
+                {isCreator ? (
                   <TBox textalign='center' width="100%" marginY={1}>
                     <TButton
                       padding={0.5}
@@ -151,7 +151,7 @@ const TRoomItem = ({ _id, topic, maximum, creater, tags, users, createdAt, onEdi
                     </TTypography>
                   </TButton>
                 )}
-                {(isCreater || (currentUser && currentUser.role < 2)) && (
+                {(isCreator || (currentUser && currentUser.role < 2)) && (
                   <TBox textalign='center' width="100%" marginY={1}>
                     <TButton
                       padding={0.5}

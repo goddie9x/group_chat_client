@@ -15,13 +15,13 @@ export type THelmetProps = {
 
 const initialState = {
   type: 'website',
-  title: 'Te11 CNTT1 K11',
-  description: 'TE11 trang web của CNTT1 k11 E',
-  relativePath: 'te11.herokuapp.com',
-  image: 'https://te11.herokuapp.com/logo512.png',
-  imageAlt: 'TE11',
-  url: 'https://te11.herokuapp.com',
-  siteName: 'Te11 CNTT1 k11 E',
+  title: 'TChat Tâm',
+  description: 'TChat trang web của Tâm',
+  relativePath: 'TChat.herokuapp.com',
+  image: 'https://TChat.herokuapp.com/logo512.png',
+  imageAlt: 'TChat',
+  url: 'https://TChat.herokuapp.com',
+  siteName: 'TChat Tâm',
   creators: '@goddie9x',
   twitterSite: '@goddie9x',
 };

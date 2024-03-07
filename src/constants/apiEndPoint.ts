@@ -12,6 +12,8 @@ const ROOM_ENDPOINT = {
   FIND_CHAT_ROOM: API_HOST + '/chat-room/search?search=',
   LIST_CHAT_ROOM_PER_PAGE: API_HOST + '/chat-room/?page=',
   FRESH_LIST_CHAT_ROOM_PER_PAGE: API_HOST + '/chat-room/?reload=1&page=',
+  LEAVE_ROOM: API_HOST + '/chat-room/leave/',
+  JOIN_ROOM: API_HOST + '/chat-room/join/',
 };
 
 export { API_HOST, USER_ENDPOINT, ROOM_ENDPOINT };

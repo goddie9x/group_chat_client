@@ -49,7 +49,7 @@ const TLoginModal = () => {
   };
 
   return (
-    <TModal open={isOpenLoginModal} title={t('login_to_te11')} onClose={handleCloseLoginModal}>
+    <TModal open={isOpenLoginModal} title={t('login_to_TChat')} onClose={handleCloseLoginModal}>
       <Formik
         initialValues={initialValue}
         onSubmit={(values, actions) => {

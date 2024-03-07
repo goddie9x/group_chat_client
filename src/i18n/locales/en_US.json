@@ -14,8 +14,8 @@
     "about": "About",
     "contact": "Contact",
     "login": "Login",
-    "login_to_te11": "Login to te11",
-    "register_to_te11": "Register to te11",
+    "login_to_TChat": "Login to TChat",
+    "register_to_TChat": "Register to TChat",
     "create_by": "Created by: ",
     "create_at": "Created at: ",
     "dev_by": "Hoàng Tâm",
@@ -62,7 +62,7 @@
     "user_role": "User role",
     "user_status": "User status",
     "get_connected_with_me_on_social_networks": "Get connected with me on social networks:",
-    "copyright": "© 2022 TE11 this is the test website create by Hoàng Tâm",
+    "copyright": "© 2022 TChat this is the test website create by Hoàng Tâm",
     "page_not_found": "Page not found",
     "main_quote": "I'm not special I'm just different",
     "open_menu": "Open menu",
@@ -283,5 +283,9 @@
     "edit_role": "Edit role",
     "select_role": "Select role",
     "user_edit_role_successfully": "User edit role successfully",
-    "user_edit_role_failed": "User edit role failed"
+    "user_edit_role_failed": "User edit role failed",
+    "camera":"Camera",
+    "microphone":"Microphone",
+    "turn_on_target":"Turn on {{target}}",
+    "turn_off_target":"Turn off {{target}}"
 }

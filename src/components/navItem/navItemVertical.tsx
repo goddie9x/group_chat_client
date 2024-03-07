@@ -30,7 +30,7 @@ const TNavItemVeritical = ({ href, title, onClick, navChildren }: TNavItemProps)
     });
   }, [history]);
   return (
-    <TNavItemStyled active={active} minwidth={350}>
+    <TNavItemStyled active={active} minwidth={350} onClick={onClick}>
       {onClick ? (
         <TButton height="100%" justifyContent="flex-start" onClick={onClick} fontSize={2.5} minwidth={25} endIcon={navChildren && <ArrowDropDownIcon />}>
           {title}

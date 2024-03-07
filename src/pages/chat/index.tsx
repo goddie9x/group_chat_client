@@ -28,7 +28,7 @@ export type TRoomsProps = {
   _id: string;
   topic: string;
   maximum: number;
-  creater: userProps;
+  creator: userProps;
   tags?: Array<string>;
   users: Array<userProps>;
   createdAt?: string;
