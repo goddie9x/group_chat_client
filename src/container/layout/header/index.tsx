@@ -28,7 +28,7 @@ import { setAlert } from 'store/slices/alert';
 import TScrollToTop from 'components/scrollToTop';
 
 import { getCurrentUserData } from 'store/thunk/auth';
-import THeaderSearch from './headerSearch';
+import THeaderSearch from '../../modal/headerSetting';
 interface THeaderProps {
   navs?: Array<TPagesProps>;
   AccSettings?: Array<TPagesProps>;

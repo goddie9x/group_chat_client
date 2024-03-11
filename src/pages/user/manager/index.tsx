@@ -18,6 +18,10 @@ import { RootState } from 'store';
 import { setHelmet } from 'store/slices/helmet';
 import TSelectRoleModal from './selectRoleModal';
 
+import { USER_ENDPOINT } from 'constants/apiEndPoint';
+
+import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
+
 export type TUsersManagerProps = {
   store?: string;
 };
@@ -41,7 +45,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
   const [rows, setRows] = useState<Array<TUsersManagerRowProps>>([]);
   const [selectedRowID, setSelectedRowID] = useState<Array<string>>([]);
   const [actionSelected, setActionSelected] = useState<string>('delete');
-  const [opositeStoredCount, setOpositeStoredCount] = useState(0);
+  const [oppositeStoredCount, setOppositeStoredCount] = useState(0);
   const [triggerReloadData, setTriggerReloadData] = useState(false);
   const userData = useSelector((state: RootState) => state.auth.userData);
   const currentPage = store === 'banned' ? 'banned/' : 'manager/';
@@ -61,12 +65,10 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
   };
   const unbanUser = (UserID: string) => {
     dispatch(setLoading(true));
-    fetch(process.env.REACT_APP_API_URL+'/user/unban/' + UserID, {
+    fetchDataWithoutCredential({
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ tokenUser: localStorage.getItem('tokenUser') }),
+      url: USER_ENDPOINT.UNBAN_USER + UserID,
+      body: { tokenUser: localStorage.getItem('tokenUser') },
     })
       .then((response) => {
         dispatch(setLoading(false));
@@ -75,7 +77,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
         }
         dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_unban_successfully') }));
         setRows((prevRows) => prevRows.filter((row) => row._id !== UserID));
-        setOpositeStoredCount((prevCount) => prevCount + 1);
+        setOppositeStoredCount((prevCount) => prevCount + 1);
         setTotalUsers((prevCount) => prevCount - 1);
       })
       .catch(() => {
@@ -96,12 +98,10 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
   const banUser = (UserID: string) => {
     dispatch(setLoading(true));
     const path = currentPage == 'banned/' ? 'delete/' : 'ban/';
-    fetch(process.env.REACT_APP_API_URL+'/user/' + path + UserID, {
+    fetchDataWithoutCredential({
+      url: USER_ENDPOINT.BAN_OR_DELETE + path + UserID,
       method: currentPage == 'banned/' ? 'DELETE/' : 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ tokenUser: localStorage.getItem('tokenUser') }),
+      body: { tokenUser: localStorage.getItem('tokenUser') },
     })
       .then((response) => {
         dispatch(setLoading(false));
@@ -111,7 +111,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
         dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_ban_successfully') }));
         setRows((prevRows) => prevRows.filter((row) => row._id !== UserID));
         if (store !== 'banned') {
-          setOpositeStoredCount((prevCount) => prevCount + 1);
+          setOppositeStoredCount((prevCount) => prevCount + 1);
         }
         setTotalUsers((prevCount) => prevCount - 1);
       })
@@ -128,16 +128,14 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
     switch (actionSelected) {
       case 'delete':
         dispatch(setLoading(true));
-        fetch(process.env.REACT_APP_API_URL+'/user/handleMultiAction', {
+        fetchDataWithoutCredential({
+          url: USER_ENDPOINT.MULTIPLE_ACTION,
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+          body: {
             tokenUser: localStorage.getItem('tokenUser'),
             method: 'delete',
             ids: selectedRowID,
-          }),
+          },
         })
           .then((response) => {
             dispatch(setLoading(false));
@@ -147,7 +145,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
             dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_ban_successfully') }));
             setRows((prevRows) => prevRows.filter((row) => !selectedRowID.includes(row._id)));
             if (store !== 'banned') {
-              setOpositeStoredCount((prevCount) => prevCount + selectedRowID.length);
+              setOppositeStoredCount((prevCount) => prevCount + selectedRowID.length);
             }
             setTotalUsers((prevCount) => prevCount - selectedRowID.length);
             setSelectedRowID([]);
@@ -159,16 +157,14 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
         break;
       case 'unban':
         dispatch(setLoading(true));
-        fetch(process.env.REACT_APP_API_URL+'/user/handleMultiAction', {
+        fetchDataWithoutCredential({
+          url: USER_ENDPOINT.MULTIPLE_ACTION,
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+          body: {
             tokenUser: localStorage.getItem('tokenUser'),
             method: 'unban',
             ids: selectedRowID,
-          }),
+          },
         })
           .then((response) => {
             dispatch(setLoading(false));
@@ -177,7 +173,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
             }
             dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_unban_successfully') }));
             setRows((prevRows) => prevRows.filter((row) => !selectedRowID.includes(row._id)));
-            setOpositeStoredCount((prevCount) => prevCount - selectedRowID.length);
+            setOppositeStoredCount((prevCount) => prevCount - selectedRowID.length);
             setTotalUsers((prevCount) => prevCount + selectedRowID.length);
             setSelectedRowID([]);
           })
@@ -188,16 +184,14 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
         break;
       case 'forceDelete':
         dispatch(setLoading(true));
-        fetch(process.env.REACT_APP_API_URL+'/user/handleMultiAction', {
+        fetchDataWithoutCredential({
+          url: USER_ENDPOINT.MULTIPLE_ACTION,
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+          body: {
             tokenUser: localStorage.getItem('tokenUser'),
             method: 'forceDelete',
             ids: selectedRowID,
-          }),
+          },
         })
           .then((response) => {
             dispatch(setLoading(false));
@@ -207,7 +201,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
             dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_force_delete_successfully') }));
             setRows((prevRows) => prevRows.filter((row) => !selectedRowID.includes(row._id)));
             if (store !== 'banned') {
-              setOpositeStoredCount((prevCount) => prevCount + selectedRowID.length);
+              setOppositeStoredCount((prevCount) => prevCount + selectedRowID.length);
             }
             setTotalUsers((prevCount) => prevCount - selectedRowID.length);
             setSelectedRowID([]);
@@ -219,17 +213,15 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
         break;
       case 'editRole':
         dispatch(setLoading(true));
-        fetch(process.env.REACT_APP_API_URL+'/user/handleMultiAction', {
+        fetchDataWithoutCredential({
+          url: USER_ENDPOINT.MULTIPLE_ACTION,
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
+          body: {
             tokenUser: localStorage.getItem('tokenUser'),
             method: 'editRole',
             ids: selectedRowID,
             role: roleSelected,
-          }),
+          },
         })
           .then((response) => {
             dispatch(setLoading(false));
@@ -252,15 +244,13 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
   };
   const handleEditRole = (_id: string) => {
     dispatch(setLoading(true));
-    fetch(process.env.REACT_APP_API_URL+'/user/edit-role/' + _id, {
+    fetchDataWithoutCredential({
+      url: USER_ENDPOINT.EDIT_ROLE + _id,
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+      body: {
         tokenUser: localStorage.getItem('tokenUser'),
         role: roleSelected,
-      }),
+      },
     })
       .then((response) => {
         dispatch(setLoading(false));
@@ -354,18 +344,14 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
     if (!userData || userData.role > 2) {
       history.push('/no_permissions');
     }
-    const urlGeTUsersManager =
-      process.env.REACT_APP_API_URL+'/user/' + currentPage + '?page=' + page + '&perPage=' + rowsPerPage;
     const tokenUser = localStorage.getItem('tokenUser');
     let isSubscribed = true;
 
     dispatch(setLoading(true));
-    fetch(urlGeTUsersManager, {
+    fetchDataWithoutCredential({
+      url: USER_ENDPOINT.GET_LIST_USER_INFO + currentPage + '?page=' + page + '&perPage=' + rowsPerPage,
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ tokenUser }),
+      body: { tokenUser },
     })
       .then((response) => {
         if (response.status >= 400) {
@@ -377,7 +363,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
         if (isSubscribed) {
           setRows(data.users);
           setTotalUsers(data.countCurrentStored);
-          setOpositeStoredCount(data.countOpositeStored);
+          setOppositeStoredCount(data.countOpositeStored);
         }
         dispatch(setLoading(false));
       })
@@ -420,8 +406,8 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
         <TLink href={'/dashboard' + (store === 'banned' ? '/user-manager' : '/banned')}>
           <TTypography>
             {store === 'banned'
-              ? t('total_amount', { amount: opositeStoredCount })
-              : t('banned_amount', { amount: opositeStoredCount })}
+              ? t('total_amount', { amount: oppositeStoredCount })
+              : t('banned_amount', { amount: oppositeStoredCount })}
           </TTypography>
         </TLink>
       </TBox>

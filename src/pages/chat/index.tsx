@@ -11,8 +11,8 @@ import TGrid from 'components/grid';
 import TButton from 'components/button';
 import TSearch, { TSearchValueProps } from 'components/search';
 import TTypography from 'components/typography';
-import TRoomItem from './roomItem';
-import TCreateChatRoom, { TCreateChatRoomSchema } from './create';
+import TRoomItem from '../../container/roomItem';
+import TCreateChatRoom, { TCreateChatRoomSchema } from '../../container/modal/chat/create';
 
 import { setHelmet } from 'store/slices/helmet';
 import { RootState } from 'store';

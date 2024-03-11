@@ -10,7 +10,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import io from 'socket.io-client';
 
 import TCard from 'components/card';
-import { TRoomsProps } from './index';
+import { TRoomsProps } from '../../pages/chat/index';
 import TGrid from 'components/grid';
 import TImage from 'components/image';
 import TBox from 'components/box';
@@ -19,7 +19,7 @@ import TTypography from 'components/typography';
 import TLink from 'components/link';
 import TTooltip from 'components/toolTip';
 import TMenu from 'components/menu';
-import { TCreateChatRoomSchema } from './create';
+import { TCreateChatRoomSchema } from '../modal/chat/create';
 import TDefaultImage from 'assets/images/T_Default.png';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,12 +27,14 @@ import { RootState } from 'store';
 import { setAlert } from 'store/slices/alert';
 import { setLoading } from 'store/slices/common';
 import { CHAT_CHANNELS } from 'constants/socketChanel';
+import { ROOM_ENDPOINT } from 'constants/apiEndPoint';
+import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
 
 export type TRoomItemProps = TRoomsProps & {
   onEdit?: (room: TCreateChatRoomSchema) => void;
 };
 
-const socket = io(process.env.REACT_APP_API_URL+'');
+const socket = io(process.env.REACT_APP_API_URL + '');
 
 const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdit }: TRoomItemProps) => {
   const [openSetting, setOpenSetting] = useState(false);
@@ -49,12 +51,10 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
 
   const handleDeleteRoom = () => {
     dispatch(setLoading(true));
-    fetch(process.env.REACT_APP_API_URL+'/chat-room/delete/' + _id, {
+    fetchDataWithoutCredential({
+      url: ROOM_ENDPOINT.DELETE_ROOM_BY_ID + _id,
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ tokenUser: localStorage.getItem('tokenUser') }),
+      body: { tokenUser: localStorage.getItem('tokenUser') },
     })
       .then((res) => {
         if (res.status >= 400) {
@@ -71,7 +71,7 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
             title: t('success'),
           }),
         );
-        socket.emit(CHAT_CHANNELS.NOTICE_CHATROOM_UPDATED_STATUS,'delete');
+        socket.emit(CHAT_CHANNELS.NOTICE_CHATROOM_UPDATED_STATUS, 'delete');
       })
       .catch(() => {
         dispatch(setLoading(false));
@@ -127,7 +127,7 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
                   {creator.username}
                 </TTypography>
                 {isCreator ? (
-                  <TBox textalign='center' width="100%" marginY={1}>
+                  <TBox textalign="center" width="100%" marginY={1}>
                     <TButton
                       padding={0.5}
                       variant="outlined"
@@ -152,7 +152,7 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
                   </TButton>
                 )}
                 {(isCreator || (currentUser && currentUser.role < 2)) && (
-                  <TBox textalign='center' width="100%" marginY={1}>
+                  <TBox textalign="center" width="100%" marginY={1}>
                     <TButton
                       padding={0.5}
                       variant="outlined"

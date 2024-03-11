@@ -15,6 +15,10 @@ import { setLoading } from 'store/slices/common';
 import { setAlert } from 'store/slices/alert';
 import { setHelmet } from 'store/slices/helmet';
 
+import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
+
+import { USER_ENDPOINT } from 'constants/apiEndPoint';
+
 export type TMatchParamsTResetPassword = {
   tokenRestore?: string;
 };
@@ -61,12 +65,10 @@ const TResetPassword = ({ match }: RouteComponentProps<TMatchParamsTResetPasswor
         const { password } = values;
 
         dispatch(setLoading(true));
-        fetch(process.env.REACT_APP_API_URL+'/user/reset-password/' + tokenRestore, {
+        fetchDataWithoutCredential({
+          url: USER_ENDPOINT.RESET_PASSWORD,
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ password }),
+          body: { password },
         })
           .then((response) => {
             if (response.status >= 400) {

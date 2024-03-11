@@ -1,8 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { setAlert } from 'store/slices/alert';
-import { USER_ENDPOINT } from 'constants/apiEndPoint';
-import { AUTH_PREFIX } from 'constants/thunkPrefix';
-import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
+
 import i18n from 'i18n';
 import {
   incrementLoginAttempts,
@@ -13,6 +11,11 @@ import {
 } from 'store/slices/auth';
 
 import { setLoading } from 'store/slices/common';
+
+import { USER_ENDPOINT } from 'constants/apiEndPoint';
+import { AUTH_PREFIX } from 'constants/thunkPrefix';
+
+import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
 interface LoginSchema {
   account?: string;
   password?: string;

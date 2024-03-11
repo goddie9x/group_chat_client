@@ -6,6 +6,7 @@ import TSearch, { TSearchValueProps } from 'components/search';
 import { useDispatch } from 'react-redux';
 import { setLoading } from 'store/slices/common';
 import useSkipRunEffectForTheFirstTime from 'hooks/useSkipRunEffectForTheFirstTime';
+import { COMMON_ENDPOINT } from 'constants/apiEndPoint';
 
 const THeaderSearch = () => {
   const [value, setValue] = useState<Array<TSearchValueProps> | []>([]);
@@ -13,7 +14,7 @@ const THeaderSearch = () => {
   const dispatch = useDispatch();
   useSkipRunEffectForTheFirstTime(() => {
     dispatch(setLoading(true));
-    fetch(process.env.REACT_APP_API_URL + '/search/' + query)
+    fetch(COMMON_ENDPOINT.SEARCH + query)
       .then((res) => {
         if (res.status >= 400) {
           throw new Error('Bad response from server');

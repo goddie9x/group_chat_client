@@ -17,8 +17,10 @@ import TButton from 'components/button';
 
 import { setLoading } from 'store/slices/common';
 import { CHAT_CHANNELS } from 'constants/socketChanel';
+import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
+import { ROOM_ENDPOINT } from 'constants/apiEndPoint';
 
-const socket = io(process.env.REACT_APP_API_URL+'');
+const socket = io(process.env.REACT_APP_API_URL + '');
 
 export type TCreateChatRoomSchema = {
   topic?: string;
@@ -51,12 +53,10 @@ const TCreateChatRoom = ({ updateData, ...props }: TCreateChatRoomProps) => {
         onSubmit={(values) => {
           const { maximum, tags } = values;
           dispatch(setLoading(true));
-          fetch(process.env.REACT_APP_API_URL+'/chat-room/create', {
+          fetchDataWithoutCredential({
+            url: ROOM_ENDPOINT.CREATE,
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ tokenUser: localStorage.getItem('tokenUser'), maximum, tags, topic: topicValue }),
+            body: { tokenUser: localStorage.getItem('tokenUser'), maximum, tags, topic: topicValue },
           })
             .then((res) => {
               if (res.status >= 400) {

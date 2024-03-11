@@ -111,7 +111,7 @@ const TRegisterModal = () => {
                 {turnOnReCaptchaRegister && (
                   <>
                     <ReCAPTCHA
-                      sitekey="6LcxUo4eAAAAACeuXLHxJaH1TTR9S7LXy_jPqn-x"
+                      sitekey={process.env.REACT_APP_RECAPTCHA_CLIENT_KEY||''}
                       asyncScriptOnLoad={() => {
                         setFieldValue('recaptcha', '');
                       }}

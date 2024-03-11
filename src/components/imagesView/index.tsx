@@ -11,6 +11,8 @@ import { setAlert } from 'store/slices/alert';
 import { setLoading } from 'store/slices/common';
 import TPagination from 'components/pagination';
 import { useLocation } from 'react-router-dom';
+import { IMAGE_ENDPOINT } from 'constants/apiEndPoint';
+import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
 
 export type TImageProps = { url?: string; _id?: string };
 
@@ -36,7 +38,7 @@ const TImagesView = ({ onSelected, deleteable, ...props }: TImagesViewProps) => 
 
   useEffect(() => {
     dispatch(setLoading(true));
-    fetch(process.env.REACT_APP_API_URL+'/images?page=' + page)
+    fetch(IMAGE_ENDPOINT.GET_LIST_IMAGE_BY_PAGE + page)
       .then((res) => {
         dispatch(setLoading(false));
         if (res.status >= 400) {
@@ -68,7 +70,7 @@ const TImagesView = ({ onSelected, deleteable, ...props }: TImagesViewProps) => 
             onClick={() => {
               if (search.includes('CKEditor')) {
                 const funcNum = getUrlParam('CKEditorFuncNum');
-                const windowForCkeditor =  window.opener.CKEDITOR.tools.callFunction(funcNum, url);
+                const windowForCkeditor = window.opener.CKEDITOR.tools.callFunction(funcNum, url);
                 windowForCkeditor.close();
               }
               onSelected?.(url, _id);
@@ -86,12 +88,10 @@ const TImagesView = ({ onSelected, deleteable, ...props }: TImagesViewProps) => 
                     e.preventDefault();
                     e.stopPropagation();
                     dispatch(setLoading(true));
-                    fetch(process.env.REACT_APP_API_URL+'/images/' + _id, {
+                    fetchDataWithoutCredential({
+                      url: IMAGE_ENDPOINT.GET_IMAGE_BY_ID + _id,
                       method: 'DELETE',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({ tokenUser: localStorage.getItem('tokenUser') }),
+                      body: { tokenUser: localStorage.getItem('tokenUser') },
                     })
                       .then((res) => {
                         if (res.status >= 400) {
@@ -110,7 +110,7 @@ const TImagesView = ({ onSelected, deleteable, ...props }: TImagesViewProps) => 
                   {t('delete')}
                 </TButton>
               )}
-              <TImage src={url}  objectFit="cover" />
+              <TImage src={url} objectFit="cover" />
             </TCard>
           </TGrid>
         ))}

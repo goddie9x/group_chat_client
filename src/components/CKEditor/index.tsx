@@ -4,6 +4,7 @@ import { CKEditor, CKEditorConfig, CKEditorEventHandlerProp } from 'ckeditor4-re
 import TBox from 'components/box';
 import { useTranslation } from 'react-i18next';
 import { TBoxProps } from 'components/box/box.styled';
+import { IMAGE_ENDPOINT } from 'constants/apiEndPoint';
 
 export type TEditorProps = {
   initData?: string;
@@ -13,7 +14,7 @@ export type TEditorProps = {
   eventHandler?: Partial<CKEditorEventHandlerProp>;
 };
 
-function TEditor({ initData,data, containerProps, config, eventHandler }: TEditorProps) {
+function TEditor({ initData, data, containerProps, config, eventHandler }: TEditorProps) {
   const { t } = useTranslation();
 
   return (
@@ -22,9 +23,9 @@ function TEditor({ initData,data, containerProps, config, eventHandler }: TEdito
         initData={initData}
         data={data}
         config={{
-          filebrowserBrowseUrl: process.env.REACT_APP_CURRENT_URL+'/images',
+          filebrowserBrowseUrl: IMAGE_ENDPOINT.GET_LIST_IMAGE,
           filebrowserUploadMethod: 'form',
-          filebrowserUploadUrl: process.env.REACT_APP_API_URL+'/cloudinary-upload',
+          filebrowserUploadUrl: IMAGE_ENDPOINT.UPLOAD_CLOUDINARY,
           image_previewText: t('no_image_selected'),
           toolbarCanCollapse: true,
           ...config,

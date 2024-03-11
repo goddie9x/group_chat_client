@@ -25,7 +25,9 @@ import { setHelmet } from 'store/slices/helmet';
 import { onSaveProps } from 'components/imagePicker/imagePicker.styled';
 import TInput from 'components/input';
 import TSelect from 'components/select';
+
 import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
+
 import { USER_ENDPOINT } from 'constants/apiEndPoint';
 
 export type TMatchParamsTViewUser = {
