@@ -47,7 +47,8 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
   const dispatch = useDispatch();
   const history = useHistory();
   const currentUser = useSelector((state: RootState) => state.auth.userData);
-  const isCreator = creator.userId === currentUser?._id;
+  const isCreator = creator.userId == currentUser?._id;
+  const isUserInRoom = users.findIndex((user) => user.userId == currentUser?._id) > -1;
 
   const handleDeleteRoom = () => {
     dispatch(setLoading(true));
@@ -205,7 +206,7 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
             </TGrid>
           ))}
         </TGrid>
-        {slotRest > 0 ? (
+        {slotRest > 0 || isUserInRoom ? (
           !!currentUser ? (
             <TLink href={'/room-chat/' + _id} padding={0.5}>
               <TButton variant="outlined" color="primary" width="100%" height={6}>

@@ -179,7 +179,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
     }
     if (currentUserId) {
       socket.emit(CHAT_CHANNELS.USER_CONNECTED, {
-        _id: roomId,
+        roomId,
         username: currentUser?.fullName || currentUser?.account,
         userId: currentUserId,
       });
@@ -205,14 +205,14 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       }
     };
   });
-  return (
+  return currentUser?(
     <TBox {...props}>
       <TTypography variant="h3" color="primary" textalign="center" marginY={2}>
         {roomInfo?.topic}
       </TTypography>
       <TGrid container spacing={2}>
         <TGrid item xs={12} sm={6} md={8}>
-          {roomInfo && <TVideoCall ownerId={roomInfo.creator.userId} roomId={roomInfo!._id} />}
+          {roomInfo && currentUser && <TVideoCall ownerId={roomInfo.creator.userId} roomId={roomInfo!._id} />}
         </TGrid>
         <TGrid item xs={12} sm={6} md={4}>
           <TRoomWrapper
@@ -313,7 +313,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
         </TGrid>
       </TGrid>
     </TBox>
-  );
+  ):null;
 };
 
 export default TRoom;

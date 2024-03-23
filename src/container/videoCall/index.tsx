@@ -7,10 +7,13 @@ import TVideoCallItem from 'components/videoCallItem';
 import TGrid from 'components/grid';
 
 import { CHAT_CHANNELS, PEER_CHANNEL } from 'constants/socketChanel';
-interface RoomProps {
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
+
+type RoomProps = {
   roomId: string;
   ownerId: string;
-}
+};
 
 const socket = io(process.env.REACT_APP_API_URL + '');
 
@@ -19,6 +22,9 @@ const TVideoCall = ({ roomId }: RoomProps) => {
   const userVideo = useRef<HTMLVideoElement>(null);
   const peersRef = useRef<{ peerID: string; peer: Peer.Instance }[]>([]);
   const [displayVideoPerRow, setDisplayVideoPerRow] = useState(2);
+  const currentUser = useSelector((state: RootState) => state.auth.userData);
+  const [openVideo, setOpenVideo] = useState(false);
+  const [openMic, setOpenMic] = useState(false);
 
   const calculateVideosPerRow = (peerCount: number) => {
     let amountItem = 1;
@@ -60,51 +66,80 @@ const TVideoCall = ({ roomId }: RoomProps) => {
   };
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-      if (userVideo.current) {
-        userVideo.current.srcObject = stream;
-      }
-      socket.emit(CHAT_CHANNELS.USER_VIDEO_CONNECTED, roomId);
-      socket.on(CHAT_CHANNELS.VIDEO_JOIN_CHAT_ROOM({ roomId }), (users) => {
-        const newPeers: Peer.Instance[] = [];
-        users.forEach((userID: string) => {
-          const peer = createPeer(userID, socket.id, stream);
-          peersRef.current.push({
-            peerID: userID,
-            peer,
-          });
-          newPeers.push(peer);
+    let mediaStream:MediaStream|null = null;
+    if (openVideo || openMic) {
+      navigator.mediaDevices.getUserMedia({ video: openVideo, audio: openMic }).then((stream) => {
+        mediaStream = stream;
+        if (userVideo.current) {
+          userVideo.current.srcObject = stream;
+        }
+        socket.emit(CHAT_CHANNELS.USER_VIDEO_CONNECTED, {
+          roomId,
+          userId: currentUser?._id,
         });
-        setPeers(newPeers);
-        calculateVideosPerRow(newPeers.length);
-      });
-
-      socket.on(CHAT_CHANNELS.USER_RECEIVED_SIGNAL, (payload) => {
-        const itemIndex = peersRef.current.findIndex((p) => p.peerID === payload.callerID);
-        if (itemIndex < 0) {
-          const peer = addPeer(payload.signal, payload.callerID, stream);
-          peersRef.current.push({
-            peerID: payload.callerID,
-            peer,
+        socket.on(CHAT_CHANNELS.VIDEO_JOIN_CHAT_ROOM({ roomId }), (users) => {
+          const newPeers: Peer.Instance[] = [];
+          users.forEach((userID: string) => {
+            const peer = createPeer(userID, socket.id, stream);
+            peersRef.current.push({
+              peerID: userID,
+              peer,
+            });
+            newPeers.push(peer);
           });
+          setPeers(newPeers);
+          calculateVideosPerRow(newPeers.length);
+        });
 
-          setPeers((prevPeers) => [...prevPeers, peer]);
-        }
-      });
+        socket.on(CHAT_CHANNELS.USER_RECEIVED_SIGNAL, (payload) => {
+          const itemIndex = peersRef.current.findIndex((p) => p.peerID === payload.callerID);
+          if (itemIndex < 0) {
+            const peer = addPeer(payload.signal, payload.callerID, stream);
+            peersRef.current.push({
+              peerID: payload.callerID,
+              peer,
+            });
 
-      socket.on(CHAT_CHANNELS.USER_RECEIVED_RETURN_SIGNAL, (payload) => {
-        const item = peersRef.current.find((p) => p.peerID === payload.id);
-        if (item) {
-          item.peer.signal(payload.signal);
-        }
+            setPeers((prevPeers) => [...prevPeers, peer]);
+          }
+        });
+
+        socket.on(CHAT_CHANNELS.USER_RECEIVED_RETURN_SIGNAL, (payload) => {
+          const item = peersRef.current.find((p) => p.peerID === payload.id);
+          if (item) {
+            item.peer.signal(payload.signal);
+          }
+        });
       });
-    });
-  }, [roomId]);
+    }
+    return () => {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => {
+          track.stop();
+        });
+      }
+      socket.off(CHAT_CHANNELS.VIDEO_JOIN_CHAT_ROOM({ roomId }));
+      socket.off(CHAT_CHANNELS.USER_RECEIVED_SIGNAL);
+      socket.off(CHAT_CHANNELS.USER_RECEIVED_RETURN_SIGNAL);
+      if (userVideo.current) {
+        userVideo.current.srcObject = null;
+      }
+    };
+  }, [roomId, openVideo, openMic]);
 
   return (
     <TGrid container spacing={1}>
       <TGrid item xs={displayVideoPerRow}>
-        <TVideoCallItem ref={userVideo} />
+        <TVideoCallItem
+          canToggleMedia
+          isTurnOnCamera={openVideo}
+          isTurnOnMicrophone={openMic}
+          ref={userVideo}
+          onToggleCamera={(prevState) => {
+            setOpenVideo(!prevState);
+          }}
+          onToggleMicrophone={(prevState) => setOpenMic(!prevState)}
+        />
       </TGrid>
       {peers.map((peer, index) => (
         <TGrid item key={index} xs={displayVideoPerRow}>
