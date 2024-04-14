@@ -79,7 +79,7 @@ const TViewUser = (props: RouteComponentProps<TMatchParamsTViewUser>) => {
       })
         .then((res) => {
           if (res.status >= 400) {
-            throw new Error(res.status.toString());
+            return Promise.reject(new Error(res.status.toString()));
           }
           dispatch(setLoading(false));
           setTriggerReloadData((prev) => !prev);
@@ -107,7 +107,7 @@ const TViewUser = (props: RouteComponentProps<TMatchParamsTViewUser>) => {
       })
         .then((res) => {
           if (res.status >= 400) {
-            throw new Error();
+            return Promise.reject(new Error());
           }
           dispatch(setLoading(false));
           dispatch(setAlert({ type: 'success', message: t('upload_image_success'), title: t('success') }));
@@ -129,7 +129,7 @@ const TViewUser = (props: RouteComponentProps<TMatchParamsTViewUser>) => {
     })
       .then((res) => {
         if (res.status >= 400) {
-          throw new Error();
+          return Promise.reject(new Error());
         }
         dispatch(setLoading(false));
         dispatch(setAlert({ type: 'success', message: t('user_ban_successfully'), title: t('success') }));
@@ -146,7 +146,7 @@ const TViewUser = (props: RouteComponentProps<TMatchParamsTViewUser>) => {
     fetch(USER_ENDPOINT.USER_BY_ID + _id)
       .then((res) => {
         if (res.status >= 400) {
-          throw new Error();
+          return Promise.reject(new Error());
         }
         return res.json();
       })
@@ -244,7 +244,7 @@ const TViewUser = (props: RouteComponentProps<TMatchParamsTViewUser>) => {
               })
                 .then((res) => {
                   if (res.status >= 400) {
-                    throw new Error(res.status.toString());
+                    return Promise.reject(new Error(res.status.toString()));
                   }
                   return res.json();
                 })

@@ -73,7 +73,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
       .then((response) => {
         dispatch(setLoading(false));
         if (response.status >= 400) {
-          throw new Error('Bad response from server');
+          return Promise.reject( new Error('Bad response from server'));
         }
         dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_unban_successfully') }));
         setRows((prevRows) => prevRows.filter((row) => row._id !== UserID));
@@ -106,7 +106,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
       .then((response) => {
         dispatch(setLoading(false));
         if (response.status >= 400) {
-          throw new Error('Bad response from server');
+          return Promise.reject( new Error('Bad response from server'));
         }
         dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_ban_successfully') }));
         setRows((prevRows) => prevRows.filter((row) => row._id !== UserID));
@@ -140,7 +140,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
           .then((response) => {
             dispatch(setLoading(false));
             if (response.status >= 400) {
-              throw new Error('Bad response from server');
+              return Promise.reject( new Error('Bad response from server'));
             }
             dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_ban_successfully') }));
             setRows((prevRows) => prevRows.filter((row) => !selectedRowID.includes(row._id)));
@@ -169,7 +169,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
           .then((response) => {
             dispatch(setLoading(false));
             if (response.status >= 400) {
-              throw new Error('Bad response from server');
+              return Promise.reject( new Error('Bad response from server'));
             }
             dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_unban_successfully') }));
             setRows((prevRows) => prevRows.filter((row) => !selectedRowID.includes(row._id)));
@@ -196,7 +196,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
           .then((response) => {
             dispatch(setLoading(false));
             if (response.status >= 400) {
-              throw new Error('Bad response from server');
+              return Promise.reject( new Error('Bad response from server'));
             }
             dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_force_delete_successfully') }));
             setRows((prevRows) => prevRows.filter((row) => !selectedRowID.includes(row._id)));
@@ -226,7 +226,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
           .then((response) => {
             dispatch(setLoading(false));
             if (response.status >= 400) {
-              throw new Error('Bad response from server');
+              return Promise.reject( new Error('Bad response from server'));
             }
             dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_edit_role_successfully') }));
             setRows((prevRows) => prevRows.filter((row) => !selectedRowID.includes(row._id)));
@@ -256,7 +256,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
         dispatch(setLoading(false));
         setUserIdChangingRole('');
         if (response.status >= 400) {
-          throw new Error('Bad response from server');
+          return Promise.reject( new Error('Bad response from server'));
         }
         dispatch(setAlert({ type: 'success', title: t('success'), message: t('user_edit_role_successfully') }));
         setRows((prevRows) => prevRows.filter((row) => !selectedRowID.includes(row._id)));
@@ -355,7 +355,7 @@ const TUsersManager = ({ store }: TUsersManagerProps) => {
     })
       .then((response) => {
         if (response.status >= 400) {
-          throw new Error('Something went wrong.');
+          return Promise.reject(new Error('Something went wrong.'));
         }
         return response.json();
       })

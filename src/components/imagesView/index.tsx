@@ -42,7 +42,7 @@ const TImagesView = ({ onSelected, deleteable, ...props }: TImagesViewProps) => 
       .then((res) => {
         dispatch(setLoading(false));
         if (res.status >= 400) {
-          throw new Error(res.statusText);
+          return Promise.reject(new Error(res.statusText));
         }
         return res.json();
       })
@@ -95,7 +95,7 @@ const TImagesView = ({ onSelected, deleteable, ...props }: TImagesViewProps) => 
                     })
                       .then((res) => {
                         if (res.status >= 400) {
-                          throw new Error(res.statusText);
+                          return Promise.reject(new Error(res.statusText));
                         }
                         setImages(images.filter((image) => image._id !== _id));
                         dispatch(setAlert({ title: t('success'), message: t('delete_successfully'), type: 'success' }));

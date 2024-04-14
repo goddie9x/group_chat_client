@@ -10,6 +10,7 @@ import TBox from 'components/box';
 
 import { TStyledVideo, TVideoCallItemProps } from './videoItem.styled';
 import { useTranslation } from 'react-i18next';
+import TTypography from 'components/typography';
 
 const TVideoCallItem = forwardRef(
   (
@@ -21,26 +22,34 @@ const TVideoCallItem = forwardRef(
       onToggleMicrophone,
       ...props
     }: TVideoCallItemProps,
-    ref:LegacyRef<HTMLVideoElement>,
+    ref: LegacyRef<HTMLVideoElement>,
   ) => {
     const { t } = useTranslation();
     return (
-      <TBox position='relative'>
+      <TBox position="relative">
         <TStyledVideo {...props} playsInline autoPlay ref={ref} />
-        <TBox display="flex" position="absolute" bottom={0.3} left='30%'>
+        <TBox position="absolute" top={0.3} left="50%" transform='translateX(-50%)'>
+          <TTypography>{props.title}</TTypography>
+        </TBox>
+
+        <TBox display="flex" position="absolute" bottom={0.3} left="50%" transform='translateX(-50%)'>
           <Tooltip
             title={t(isTurnOnCamera ? 'turn_off_target' : 'turn_on_target', { target: t('camera') }) || ''}
             onClick={() => canToggleMedia && onToggleCamera?.(isTurnOnCamera)}
           >
-            <IconButton aria-label={t(isTurnOnCamera ? 'turn_off_target' : 'turn_on_target', { target: t('camera') })}>
+            <IconButton
+              color={isTurnOnCamera ? 'primary' : 'error'}
+              aria-label={t(isTurnOnCamera ? 'turn_off_target' : 'turn_on_target', { target: t('camera') })}
+            >
               {isTurnOnCamera ? <PhotoCameraIcon /> : <NoPhotographyIcon />}
             </IconButton>
           </Tooltip>
           <Tooltip
-            title={t(isTurnOnCamera ? 'turn_off_target' : 'turn_on_target', { target: t('microphone') }) || ''}
+            title={t(isTurnOnMicrophone ? 'turn_off_target' : 'turn_on_target', { target: t('microphone') }) || ''}
             onClick={() => canToggleMedia && onToggleMicrophone?.(isTurnOnMicrophone)}
           >
             <IconButton
+              color={isTurnOnMicrophone ? 'primary' : 'error'}
               aria-label={t(isTurnOnCamera ? 'turn_off_target' : 'turn_on_target', { target: t('microphone') }) || ''}
             >
               {isTurnOnMicrophone ? <MicIcon /> : <MicOffIcon />}

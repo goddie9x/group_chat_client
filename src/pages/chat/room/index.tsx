@@ -123,13 +123,13 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
     })
       .then((res) => {
         if (res.status >= 400) {
-          throw new Error(res.statusText);
+          return Promise.reject(new Error(res.statusText));
         }
         return res.json();
       })
       .then((res) => {
         if (!res) {
-          throw new Error('not_found');
+          return Promise.reject(new Error('not_found'));
         }
         setRoomInfo(res);
         document.title = res.topic;
@@ -205,14 +205,14 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       }
     };
   });
-  return currentUser?(
+  return currentUser && roomInfo ? (
     <TBox {...props}>
       <TTypography variant="h3" color="primary" textalign="center" marginY={2}>
-        {roomInfo?.topic}
+        {roomInfo.topic}
       </TTypography>
       <TGrid container spacing={2}>
         <TGrid item xs={12} sm={6} md={8}>
-          {roomInfo && currentUser && <TVideoCall ownerId={roomInfo.creator.userId} roomId={roomInfo!._id} />}
+          {roomInfo && currentUser && <TVideoCall currentUser={currentUser} {...roomInfo} />}
         </TGrid>
         <TGrid item xs={12} sm={6} md={4}>
           <TRoomWrapper
@@ -274,7 +274,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
                 toolbar: [
                   ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', 'Undo', 'Redo'],
                   ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'CopyFormatting', 'RemoveFormat'],
-                  ['Styles', 'Format', 'Font', 'FontSize', 'TextColor', 'BGColor'],
+                  ['Styles', 'Format', 'Font', 'fontSize', 'TextColor', 'BGColor'],
                   [
                     'NumberedList',
                     'BulletedList',
@@ -313,7 +313,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
         </TGrid>
       </TGrid>
     </TBox>
-  ):null;
+  ) : null;
 };
 
 export default TRoom;

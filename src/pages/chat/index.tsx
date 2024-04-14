@@ -19,18 +19,17 @@ import { RootState } from 'store';
 import { setAlert } from 'store/slices/alert';
 import { ROOM_ENDPOINT } from 'constants/apiEndPoint';
 import { CHAT_CHANNELS } from 'constants/socketChanel';
+import { UserDataSchema } from 'store/slices/auth';
 
-const socket = io(process.env.REACT_APP_API_URL+'');
-
-export type userProps = { username: string; userId: string; avatar: string };
+const socket = io(process.env.REACT_APP_API_URL + '');
 
 export type TRoomsProps = {
   _id: string;
   topic: string;
   maximum: number;
-  creator: userProps;
+  creator: UserDataSchema;
   tags?: Array<string>;
-  users: Array<userProps>;
+  users: Array<UserDataSchema>;
   createdAt?: string;
 };
 
@@ -51,7 +50,7 @@ const TChatRooms = () => {
     fetch(ROOM_ENDPOINT.LIST_CHAT_ROOM_PER_PAGE + page, { signal: abortController.signal })
       .then((res) => {
         if (res.status >= 400) {
-          throw new Error(res.statusText);
+          return Promise.reject(new Error(res.statusText));
         }
         return res.json();
       })
@@ -73,27 +72,31 @@ const TChatRooms = () => {
   });
   useEffect(() => {
     const abortController = new AbortController();
-
-    fetch(ROOM_ENDPOINT.FIND_CHAT_ROOM + searchValue, { signal: abortController.signal })
-      .then((res) => {
-        if (res.status >= 400) {
-          throw new Error(res.statusText);
-        }
-        return res.json();
-      })
-      .then((res) => {
-        setOptionsSearch(res);
-      });
-    return () => abortController.abort();
+    if (!!searchValue) {
+      fetch(ROOM_ENDPOINT.FIND_CHAT_ROOM + searchValue, { signal: abortController.signal })
+        .then((res) => {
+          if (res.status >= 400) {
+            return Promise.reject(new Error(res.statusText));
+          }
+          return res.json();
+        })
+        .then((res) => {
+          setOptionsSearch(res);
+        });
+      return () => abortController.abort();
+    } else {
+      setOptionsSearch([]);
+    }
   }, [searchValue]);
 
   useEffect(() => {
+    let timer: NodeJS.Timeout;
     socket.on(CHAT_CHANNELS.REQUEST_UPDATE_CHATROOM, () => {
-      setTimeout(() => {
+      timer = setTimeout(() => {
         fetch(ROOM_ENDPOINT.FRESH_LIST_CHAT_ROOM_PER_PAGE + page)
           .then((res) => {
             if (res.status >= 400) {
-              throw new Error(res.statusText);
+              return Promise.reject(new Error(res.statusText));
             }
             return res.json();
           })
@@ -104,6 +107,7 @@ const TChatRooms = () => {
     });
     return () => {
       socket.off(CHAT_CHANNELS.REQUEST_UPDATE_CHATROOM);
+      clearTimeout(timer);
     };
   }, []);
   return (

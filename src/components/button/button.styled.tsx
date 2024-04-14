@@ -30,7 +30,7 @@ export type TButtonProps = ButtonProps & {
   left?: number;
   right?: number;
   display?: string;
-  justifyContent?: string;
+  justifycontent?: string;
 };
 
 const TButtonStyled = styled(Button)<TButtonProps>`
@@ -56,7 +56,7 @@ const TButtonStyled = styled(Button)<TButtonProps>`
   line-height: ${({ lineheight }) => lineheight};
   text-align: ${({ textalign }) => textalign};
   display: ${({ display }) => display};
-  justify-content: ${({ justifyContent }) => justifyContent};
+  justifycontent: ${({ justifycontent }) => justifycontent};
   p {
     color: ${({ textColor, theme }) => (textColor ? textColor : theme.palette.text.primary)};
   }

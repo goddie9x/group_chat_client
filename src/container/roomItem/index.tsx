@@ -47,8 +47,8 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
   const dispatch = useDispatch();
   const history = useHistory();
   const currentUser = useSelector((state: RootState) => state.auth.userData);
-  const isCreator = creator.userId == currentUser?._id;
-  const isUserInRoom = users.findIndex((user) => user.userId == currentUser?._id) > -1;
+  const isCreator = creator._id == currentUser?._id;
+  const isUserInRoom = users.findIndex((user) => user._id == currentUser?._id) > -1;
 
   const handleDeleteRoom = () => {
     dispatch(setLoading(true));
@@ -59,7 +59,7 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
     })
       .then((res) => {
         if (res.status >= 400) {
-          throw new Error(res.statusText);
+          return Promise.reject(new Error(res.statusText));
         }
         return res.json();
       })
@@ -90,7 +90,7 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
       <TCard>
         <TGrid container alignItems="center" padding={1}>
           <TGrid item xs={2}>
-            <TImage src={creator.avatar || TDefaultImage} width={40} height={40} borderradius={1000} />
+            <TImage src={creator.image || TDefaultImage} width={40} height={40} borderradius={1000} />
           </TGrid>
           <TGrid item xs={8} overflow="hidden">
             {tags && (
@@ -118,14 +118,14 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
                   {t('group_owner')}
                 </TTypography>
                 <TImage
-                  src={creator.avatar || TDefaultImage}
+                  src={creator.image || TDefaultImage}
                   width={50}
                   height={50}
                   borderradius={1000}
                   cursor="not-allowed"
                 />
                 <TTypography variant="body1" cursor="not-allowed" margin={1}>
-                  {creator.username}
+                  {creator.fullName ?? creator.account}
                 </TTypography>
                 {isCreator ? (
                   <TBox textalign="center" width="100%" marginY={1}>
@@ -182,16 +182,16 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
         <TGrid container height={30} padding={1}>
           {users.map((user, index) => (
             <TGrid item xs={4} md={3} padding={0.5} key={index}>
-              <TTooltip title={user.username}>
+              <TTooltip title={user.fullName ?? user.account}>
                 <TButton
                   padding={0}
                   variant="outlined"
                   borderradius={1000}
-                  onClick={() => history.push('/user/profile/' + user.userId)}
+                  onClick={() => history.push('/user/profile/' + user._id)}
                 >
                   <TImage
-                    src={user.avatar || TDefaultImage}
-                    alt={user.username}
+                    src={user.image || TDefaultImage}
+                    alt={user.fullName ?? user.account}
                     height={85}
                     width={85}
                     borderradius={1000}

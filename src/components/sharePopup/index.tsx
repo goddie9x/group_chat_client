@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { setAlert } from 'store/slices/alert';
 
 const TSharePopup = () => {
-  const [isMinimal, setIsMinimal] = useState(true);
+  const [isMinimal, setisMinimal] = useState<boolean>(true);
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -20,15 +20,15 @@ const TSharePopup = () => {
     dispatch(setAlert({ title: t('success'), message: t('copied_share_link_to_clipboard'), type: 'success' }));
   };
   return (
-    <TSharePopupWrapper top="45vh" right={1} isMinimal={isMinimal}>
+    <TSharePopupWrapper top="45vh" right={1} isinimal={isMinimal}>
       <TTooltip title={t('share_this_page')}>
         <TMinmalButton
           paddingleft={0.2}
           minwidth={0}
           paddingright={0.2}
           variant="outlined"
-          isMinimal={isMinimal}
-          onClick={() => setIsMinimal(!isMinimal)}
+          isinimal={isMinimal.toString()}
+          onClick={() => setisMinimal(!isMinimal)}
         >
           <ArrowRightIcon />
         </TMinmalButton>

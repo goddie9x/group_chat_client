@@ -22,6 +22,7 @@ export type TBoxProps = BoxProps & {
   overflowx?: 'visible' | 'hidden' | 'scroll' | 'auto';
   overflowy?: 'visible' | 'hidden' | 'scroll' | 'auto';
   borderradius?: number | string;
+  transform?: string;
   transition?: string;
   cursor?:
     | 'pointer'
@@ -64,6 +65,7 @@ const TBoxStyled = styled(Box)<TBoxProps>`
   border-radius: ${({ borderradius, theme }) =>
     borderradius && (typeof borderradius === 'string' ? borderradius : theme.spacing(borderradius))};
   transition: ${({ transition }) => transition};
+  transform: ${({ transform }) => transform};
   overflow: ${({ overflow }) => overflow};
   overflow-x: ${({ overflowx }) => overflowx};
   overflow-y: ${({ overflowy }) => overflowy};

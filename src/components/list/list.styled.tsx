@@ -16,7 +16,7 @@ export const TListItemStyled = styled(Box)`
     line-height: 1.25rem;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justifycontent: center;
     border-radius: 999px;
     color: ${({ theme }) => theme.palette.primary.contrastText};
     font-size: ${({ theme }) => theme.spacing(1.5)};

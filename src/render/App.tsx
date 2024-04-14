@@ -42,12 +42,12 @@ function App() {
           MuiButton: {
             styleOverrides: {
               sizeMedium: {
-                'font-size': '14px',
+                fontSize: '14px',
                 padding: '13px 23px',
               },
               sizeSmall: {
                 padding: '12px 15px',
-                'font-size': '14px',
+                fontSize: '14px',
               },
             },
           },

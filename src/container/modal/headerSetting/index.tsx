@@ -13,25 +13,29 @@ const THeaderSearch = () => {
   const [query, setQuery] = useState('');
   const dispatch = useDispatch();
   useSkipRunEffectForTheFirstTime(() => {
-    dispatch(setLoading(true));
-    fetch(COMMON_ENDPOINT.SEARCH + query)
-      .then((res) => {
-        if (res.status >= 400) {
-          throw new Error('Bad response from server');
-        }
-        return res.json();
-      })
-      .then((res) => {
-        dispatch(setLoading(false));
-        setValue(res.usersResult);
-      })
-      .catch(() => {
-        dispatch(setLoading(false));
-        setValue([]);
-      });
+    if (!!query && query != '') {
+      dispatch(setLoading(true));
+      fetch(COMMON_ENDPOINT.SEARCH + query)
+        .then((res) => {
+          if (res.status >= 400) {
+            return Promise.reject(new Error('Bad response from server'));
+          }
+          return res.json();
+        })
+        .then((res) => {
+          dispatch(setLoading(false));
+          setValue(res.usersResult);
+        })
+        .catch(() => {
+          dispatch(setLoading(false));
+          setValue([]);
+        });
+    } else {
+      setValue([]);
+    }
   }, [query]);
 
-  return <TSearch hideMobile={true} options={value} onChangeValue={(newQuery) => setQuery(newQuery)} />;
+  return <TSearch hideMobile options={value} onChangeValue={(newQuery) => setQuery(newQuery)} />;
 };
 
 export default THeaderSearch;

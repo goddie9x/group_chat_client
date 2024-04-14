@@ -72,7 +72,7 @@ const TResetPassword = ({ match }: RouteComponentProps<TMatchParamsTResetPasswor
         })
           .then((response) => {
             if (response.status >= 400) {
-              throw new Error();
+              return Promise.reject( new Error());
             }
             return response.json();
           })

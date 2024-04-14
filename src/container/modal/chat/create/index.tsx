@@ -60,7 +60,7 @@ const TCreateChatRoom = ({ updateData, ...props }: TCreateChatRoomProps) => {
           })
             .then((res) => {
               if (res.status >= 400) {
-                throw new Error('Error');
+                return Promise.reject(new Error());
               }
               return res.json();
             })

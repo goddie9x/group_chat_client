@@ -22,8 +22,9 @@ const TPeerVideo = ({ peer, ...props }: TPeerVideoProps) => {
       if (ref.current) {
         ref.current.srcObject = stream;
       }
+      console.log(props.title,stream);
     });
-  }, []);
+  }, [peer]);
 
   return <TVideoCallItem {...props} playsInline autoPlay ref={ref} />;
 };
