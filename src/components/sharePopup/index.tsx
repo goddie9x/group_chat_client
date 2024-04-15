@@ -3,7 +3,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 
 import TButton from 'components/button';
-import TSharePopupWrapper, { TMinmalButton } from './sharePopup.styled';
+import TSharePopupWrapper, { TMinimalButton } from './sharePopup.styled';
 import TTooltip from 'components/toolTip';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
@@ -20,18 +20,18 @@ const TSharePopup = () => {
     dispatch(setAlert({ title: t('success'), message: t('copied_share_link_to_clipboard'), type: 'success' }));
   };
   return (
-    <TSharePopupWrapper top="45vh" right={1} isinimal={isMinimal}>
+    <TSharePopupWrapper top="45vh" right={1} isminimal={isMinimal.toString()}>
       <TTooltip title={t('share_this_page')}>
-        <TMinmalButton
+        <TMinimalButton
           paddingleft={0.2}
           minwidth={0}
           paddingright={0.2}
           variant="outlined"
-          isinimal={isMinimal.toString()}
+          isminimal={isMinimal.toString()}
           onClick={() => setisMinimal(!isMinimal)}
         >
           <ArrowRightIcon />
-        </TMinmalButton>
+        </TMinimalButton>
         <TButton variant="outlined" onClick={copyUrlToClipboard}>
           <ShareIcon />
         </TButton>

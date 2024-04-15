@@ -82,7 +82,6 @@ const TCreateChatRoom = ({ updateData, ...props }: TCreateChatRoomProps) => {
                 <Autocomplete
                   multiple
                   options={tagOptions}
-                  defaultValue={values.tags}
                   limitTags={3}
                   getOptionLabel={(option) => option}
                   filterSelectedOptions

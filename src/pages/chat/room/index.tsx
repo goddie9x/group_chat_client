@@ -44,7 +44,6 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
   const editorInstanceRef = useRef<CKEditorInstance | null>(null);
   const { t } = useTranslation();
   const history = useHistory();
-  const currentUserId = currentUser?._id || '';
   const dispatch = useDispatch();
 
   const handleNewMessage = () => {
@@ -96,7 +95,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
     socket.emit(CHAT_CHANNELS.NEW_MESSAGE, {
       _id: roomId,
       message: messageToSend,
-      userId: currentUserId,
+      userId: currentUser?._id,
       username: currentUser?.fullName || currentUser?.account,
       avatar: currentUser?.image || '',
       time: new Date(),
@@ -139,28 +138,28 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       });
   }, []);
   useEffect(() => {
-    socket.on(CHAT_CHANNELS.SEND_MESSAGE_IN_ROOM({ roomId }), (data: TMessageProps) => {
-      setMessages((messages) => [...messages, data]);
-      handleNewMessage();
-    });
-    socket.on(CHAT_CHANNELS.LEAVE_CHAT_ROOM({ roomId }), (data) => {
-      setMessages((prewMessgage) => {
+    socket.on(CHAT_CHANNELS.JOIN_CHAT_ROOM({ roomId }), (data) => {
+      setMessages((prevMessage) => {
         const newMessage = [
-          ...prewMessgage,
+          ...prevMessage,
           {
-            specialMessgage: t('user_has_left_the_group', { user: data.username }),
+            specialMessgage: t('user_has_joined_the_group', { user: data.fullName || data.account }),
           },
         ];
         return newMessage;
       });
       handleNewMessage();
     });
-    socket.on(CHAT_CHANNELS.JOIN_CHAT_ROOM({ roomId }), (data) => {
-      setMessages((prewMessgage) => {
+    socket.on(CHAT_CHANNELS.SEND_MESSAGE_IN_ROOM({ roomId }), (data: TMessageProps) => {
+      setMessages((messages) => [...messages, data]);
+      handleNewMessage();
+    });
+    socket.on(CHAT_CHANNELS.LEAVE_CHAT_ROOM({ roomId }), (data) => {
+      setMessages((prevMessage) => {
         const newMessage = [
-          ...prewMessgage,
+          ...prevMessage,
           {
-            specialMessgage: t('user_has_joined_the_group', { user: data.username }),
+            specialMessgage: t('user_has_left_the_group', { user: data.fullName || data.account }),
           },
         ];
         return newMessage;
@@ -173,18 +172,6 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       socket.off(CHAT_CHANNELS.JOIN_CHAT_ROOM({ roomId }));
     };
   }, []);
-  useEffect(() => {
-    if (isChatToUser) {
-      return;
-    }
-    if (currentUserId) {
-      socket.emit(CHAT_CHANNELS.USER_CONNECTED, {
-        roomId,
-        username: currentUser?.fullName || currentUser?.account,
-        userId: currentUserId,
-      });
-    }
-  }, [currentUserId]);
   useEffect(() => {
     window.addEventListener('beforeunload', handleUnloadEvent);
     window.addEventListener('unload', handleUnloadEvent);
@@ -227,7 +214,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
             {messages.map((message, index) => {
               return (
                 <TMessage
-                  isCurrentUser={message.userId === currentUserId}
+                  isCurrentUser={message.userId === currentUser?._id}
                   hideAvatar={index > 1 && message.userId == messages[index - 1].userId}
                   {...message}
                   key={index}

@@ -9,7 +9,6 @@ import TGrid from 'components/grid';
 
 import { CHAT_CHANNELS, PEER_CHANNEL } from 'constants/socketChanel';
 import { UserDataSchema } from 'store/slices/auth';
-import useSkipRunEffectForTheFirstTime from 'hooks/useSkipRunEffectForTheFirstTime';
 
 const socket = io(process.env.REACT_APP_API_URL + '');
 
@@ -80,11 +79,7 @@ const TVideoCall = ({ _id: roomId, creator, users, currentUser }: TVideoCallProp
           userVideo.current.srcObject = streamRef.current;
         }
         listPeerToSendStreamRef.current.forEach((p) => (p.peer = createPeerToStream(p.user, streamRef.current)));
-
-        socket.emit(CHAT_CHANNELS.USER_VIDEO_CONNECTED, { roomId, userConnected: currentUser });
-      } catch {
-        socket.emit(CHAT_CHANNELS.USER_OFF_CALL, { roomId, user: currentUser });
-      }
+      } catch (e) {}
     };
     getMedia();
 
@@ -96,40 +91,34 @@ const TVideoCall = ({ _id: roomId, creator, users, currentUser }: TVideoCallProp
       }
     };
   }, [openVideo, openMic]);
-  useEffect(() => {
-    const newPeers: PeerProps[] = [];
-    listPeerToSendStreamRef.current = [];
-    users.forEach((user) => {
-      if (currentUser._id != user._id) {
-        newPeers.push({
-          user,
-          peer: undefined,
-        });
-        listPeerToSendStreamRef.current.push({
-          user,
-          peer: undefined,
-        });
-      }
-    });
-    setPeers(newPeers);
-  }, []);
-  useSkipRunEffectForTheFirstTime(() => {
-    socket.on(CHAT_CHANNELS.VIDEO_JOIN_CHAT_ROOM({ roomId }), (user) => {
-      if (currentUser._id != user._id) {
-        const existPeerIndex = listPeerToSendStreamRef.current.findIndex((p) => p.user._id == user._id);
 
-        if (existPeerIndex > -1) {
-          listPeerToSendStreamRef.current[existPeerIndex].peer = createPeerToStream(user, streamRef.current);
-        } else {
-          listPeerToSendStreamRef.current.push({ user, peer: createPeerToStream(user, streamRef.current) });
-          setPeers((pre) => [
-            ...pre,
-            {
+  useEffect(() => {
+    socket.emit(CHAT_CHANNELS.USER_CONNECTED, {
+      roomId,
+      user: currentUser,
+    });
+    socket.on(CHAT_CHANNELS.JOIN_CHAT_ROOM({ roomId }), (user) => {
+      if (user._id != currentUser._id) {
+        const newPeers: PeerProps[] = [];
+
+        if (users.findIndex((u) => u._id == user._id) < 0) {
+          users.push(user);
+        }
+        console.log(users);
+        listPeerToSendStreamRef.current = [];
+        users.forEach((user) => {
+          if (currentUser._id != user._id) {
+            newPeers.push({
               user,
               peer: undefined,
-            },
-          ]);
-        }
+            });
+            listPeerToSendStreamRef.current.push({
+              user,
+              peer: createPeerToStream(user, streamRef.current),
+            });
+          }
+        });
+        setPeers(newPeers);
       }
     });
     socket.on(
@@ -138,8 +127,9 @@ const TVideoCall = ({ _id: roomId, creator, users, currentUser }: TVideoCallProp
         if (currentUser._id == userRequireAnswerSignal._id) {
           try {
             const existPeerIndex = peers.findIndex((p) => p.user._id == userSendSignal._id);
+            const newPeer = addPeerToReceiveStream(userSendSignal, signal, streamRef.current);
+
             if (existPeerIndex < 0) {
-              const newPeer = addPeerToReceiveStream(userSendSignal, signal, streamRef.current);
               setPeers((prev) => [
                 ...prev,
                 {
@@ -149,15 +139,12 @@ const TVideoCall = ({ _id: roomId, creator, users, currentUser }: TVideoCallProp
               ]);
             } else {
               setPeers((prev) => {
-                const newPeer = addPeerToReceiveStream(userSendSignal, signal, streamRef.current);
                 const newPeers = [...prev];
                 newPeers[existPeerIndex].peer = newPeer;
                 return newPeers;
               });
             }
-          } catch (e) {
-            console.log(e);
-          }
+          } catch (e) {}
         }
       },
     );
@@ -167,21 +154,14 @@ const TVideoCall = ({ _id: roomId, creator, users, currentUser }: TVideoCallProp
         if (currentUser._id == userReceiveReturnSignal._id) {
           try {
             listPeerToSendStreamRef.current.find((p) => p.user._id == userReturnSignal._id)?.peer?.signal(signal);
-          } catch (e) {
-            console.log(e);
-          }
+          } catch (e) {}
         }
       },
     );
-    socket.on(CHAT_CHANNELS.USER_OFF_CALL + roomId, ({ roomId, user }) => {
-      listPeerToSendStreamRef.current = listPeerToSendStreamRef.current.filter((p) => p.user._id != user._id);
-      setPeers((prevPeers) => [...prevPeers.filter((p) => p.user._id != user._id)]);
-    });
     return () => {
-      socket.off(CHAT_CHANNELS.VIDEO_JOIN_CHAT_ROOM({ roomId }));
+      socket.off(CHAT_CHANNELS.JOIN_CHAT_ROOM({ roomId }));
       socket.off(CHAT_CHANNELS.USER_RECEIVED_SIGNAL_IN_ROOM({ roomId }));
       socket.off(CHAT_CHANNELS.USER_RECEIVED_RETURN_SIGNAL({ roomId }));
-      socket.emit(CHAT_CHANNELS.USER_OFF_CALL, { user: currentUser });
     };
   }, []);
   return (

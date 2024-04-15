@@ -21,8 +21,8 @@ const TPeerVideo = ({ peer, ...props }: TPeerVideoProps) => {
     peer?.on(PEER_CHANNEL.STREAM, (stream) => {
       if (ref.current) {
         ref.current.srcObject = stream;
+        console.log(props.title,stream);
       }
-      console.log(props.title,stream);
     });
   }, [peer]);
 
