@@ -20,8 +20,6 @@ const TPeerVideo = ({ peer, ...props }: TPeerVideoProps) => {
   useEffect(() => {
     peer?.on(PEER_CHANNEL.STREAM, (stream) => {
       if (ref.current) {
-        console.log(props?.title, stream);
-
         ref.current.srcObject = stream;
       }
     });

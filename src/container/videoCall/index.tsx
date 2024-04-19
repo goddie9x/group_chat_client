@@ -59,6 +59,16 @@ const TVideoCall = ({ _id: roomId, creator, users }: TRoomsProps) => {
         offerToReceiveVideo: true,
       },
       stream,
+      config: {
+        iceServers: [
+          { urls: process.env.REACT_APP_TURN_SERVER! },
+          {
+            urls: process.env.REACT_APP_TURN_SERVER!,
+            username: process.env.REACT_APP_TURN_USERNAME,
+            credential: process.env.REACT_APP_TURN_PASSWORD,
+          },
+        ],
+      },
     });
     peer.on(PEER_CHANNEL.ERROR, (e) => {
       console.log(e);
@@ -84,6 +94,30 @@ const TVideoCall = ({ _id: roomId, creator, users }: TRoomsProps) => {
       answerOptions: {
         offerToReceiveAudio: false,
         offerToReceiveVideo: false,
+      },
+      config: {
+        iceServers: [
+          {
+            urls: process.env.REACT_APP_TURN_DEFAULT_SERVER!,
+            username: process.env.REACT_APP_TURN_USERNAME,
+            credential: process.env.REACT_APP_TURN_PASSWORD,
+          },
+          {
+            urls: process.env.REACT_APP_TURN_TCP_SERVER!,
+            username: process.env.REACT_APP_TURN_USERNAME,
+            credential: process.env.REACT_APP_TURN_PASSWORD,
+          },
+          {
+            urls: process.env.REACT_APP_TURN_TCP2_SERVER!,
+            username: process.env.REACT_APP_TURN_USERNAME,
+            credential: process.env.REACT_APP_TURN_PASSWORD,
+          },
+          {
+            urls: process.env.REACT_APP_TURN_TCP_GLOBAL_SERVER!,
+            username: process.env.REACT_APP_TURN_USERNAME,
+            credential: process.env.REACT_APP_TURN_PASSWORD,
+          },
+        ],
       },
     });
     peer.on(PEER_CHANNEL.ERROR, (e) => {
@@ -141,8 +175,7 @@ const TVideoCall = ({ _id: roomId, creator, users }: TRoomsProps) => {
             userVideo.current.srcObject = streamRef.current;
           }
           listPeerToSendStreamRef.current.forEach((p) => createPeerToStream(p.user, streamRef.current));
-        } catch (e) {
-        }
+        } catch (e) {}
       };
       getMedia();
 
@@ -187,8 +220,7 @@ const TVideoCall = ({ _id: roomId, creator, users }: TRoomsProps) => {
           if (currentUser._id == userReceiveReturnSignal._id) {
             try {
               listPeerToSendStreamRef.current.find((p) => p.user._id == userReturnSignal._id)?.peer?.signal(signal);
-            } catch (e) {
-            }
+            } catch (e) {}
           }
         },
       );
@@ -208,7 +240,7 @@ const TVideoCall = ({ _id: roomId, creator, users }: TRoomsProps) => {
     <TGrid container spacing={1}>
       <TGrid height="100%" item xs={calculateVideosPerRow(peers.length + 1)}>
         <TVideoCallItem
-          muted
+          muted={!streamRef.current}
           height="100%"
           title={currentUser.fullName ?? currentUser.account}
           canToggleMedia
