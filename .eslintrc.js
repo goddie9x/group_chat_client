@@ -50,6 +50,6 @@ module.exports = {
                 html: true,
             },
         ],
-        'no-console': ['warn', { allow: ['error', 'info'] }],
+        'no-console':'off',
     },
 };

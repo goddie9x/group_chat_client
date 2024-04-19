@@ -57,7 +57,8 @@ const TChatRooms = () => {
       .then((res) => {
         const newRooms = unionBy(rooms, res, '_id');
         setRooms(newRooms);
-      });
+      })
+      .catch((e) => console.log(e));
     return () => abortController.abort();
   }, [page]);
   useEffect(() => {
@@ -82,7 +83,8 @@ const TChatRooms = () => {
         })
         .then((res) => {
           setOptionsSearch(res);
-        });
+        })
+        .catch((e) => console.log(e));
       return () => abortController.abort();
     } else {
       setOptionsSearch([]);

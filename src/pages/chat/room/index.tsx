@@ -154,12 +154,12 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       setMessages((messages) => [...messages, data]);
       handleNewMessage();
     });
-    socket.on(CHAT_CHANNELS.LEAVE_CHAT_ROOM({ roomId }), (data) => {
+    socket.on(CHAT_CHANNELS.LEAVE_CHAT_ROOM({ roomId }), (user) => {
       setMessages((prevMessage) => {
         const newMessage = [
           ...prevMessage,
           {
-            specialMessgage: t('user_has_left_the_group', { user: data.fullName || data.account }),
+            specialMessgage: t('user_has_left_the_group', { user: user.fullName || user.account }),
           },
         ];
         return newMessage;
@@ -199,7 +199,7 @@ const TRoom = ({ chatWrapperProps, roomId, isChatToUser, ...props }: TRoomProps)
       </TTypography>
       <TGrid container spacing={2}>
         <TGrid item xs={12} sm={6} md={8}>
-          {roomInfo && currentUser && <TVideoCall currentUser={currentUser} {...roomInfo} />}
+          {roomInfo && currentUser && <TVideoCall {...roomInfo} />}
         </TGrid>
         <TGrid item xs={12} sm={6} md={4}>
           <TRoomWrapper

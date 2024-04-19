@@ -20,12 +20,17 @@ const TPeerVideo = ({ peer, ...props }: TPeerVideoProps) => {
   useEffect(() => {
     peer?.on(PEER_CHANNEL.STREAM, (stream) => {
       if (ref.current) {
+        console.log(props?.title, stream);
+
         ref.current.srcObject = stream;
-        console.log(props.title,stream);
       }
     });
   }, [peer]);
-
+  useEffect(() => {
+    if (ref.current && !ref.current.srcObject) {
+      ref.current.style.backgroundColor = 'black';
+    }
+  }, []);
   return <TVideoCallItem {...props} playsInline autoPlay ref={ref} />;
 };
 

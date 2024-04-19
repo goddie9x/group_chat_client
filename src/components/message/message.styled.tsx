@@ -21,5 +21,7 @@ export const TAvatarMessage = styled(TImage)`
     width: ${({ theme }) => theme.spacing(4)};
     height: ${({ theme }) => theme.spacing(4)};
   }
+  aspect-ratio: 1;
+  object-fit: contain;
 `;
 export default TMessageWrapper;

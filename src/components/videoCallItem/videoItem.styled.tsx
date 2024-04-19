@@ -9,6 +9,9 @@ export type TVideoCallItemProps = React.DetailedHTMLProps<React.VideoHTMLAttribu
 };
 
 export const TStyledVideo = styled.video<TVideoCallItemProps>`
+  border-radius: 8px;
   width: 100%;
   height: 100%;
+  transform: scaleX(-1);
+  aspect-ratio: 1.3;
 `;
