@@ -240,7 +240,8 @@ const TVideoCall = ({ _id: roomId, creator, users }: TRoomsProps) => {
     <TGrid container spacing={1}>
       <TGrid height="100%" item xs={calculateVideosPerRow(peers.length + 1)}>
         <TVideoCallItem
-          muted={!streamRef.current}
+          muted
+          background="#000"
           height="100%"
           title={currentUser.fullName ?? currentUser.account}
           canToggleMedia

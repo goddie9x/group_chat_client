@@ -19,7 +19,6 @@ import TTypography from 'components/typography';
 import TLink from 'components/link';
 import TTooltip from 'components/toolTip';
 import TMenu from 'components/menu';
-import { TCreateChatRoomSchema } from '../modal/chat/create';
 import TDefaultImage from 'assets/images/T_Default.png';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,7 +30,7 @@ import { ROOM_ENDPOINT } from 'constants/apiEndPoint';
 import fetchDataWithoutCredential from 'utils/fetchDataWithCredential';
 
 export type TRoomItemProps = TRoomsProps & {
-  onEdit?: (room: TCreateChatRoomSchema) => void;
+  onEdit?: (room: TRoomsProps) => void;
 };
 
 const socket = io(process.env.REACT_APP_API_URL + '');
@@ -133,7 +132,7 @@ const TRoomItem = ({ _id, topic, maximum, creator, tags, users, createdAt, onEdi
                       padding={0.5}
                       variant="outlined"
                       onClick={() => {
-                        onEdit?.({ topic, maximum, tags });
+                        onEdit?.({ _id, topic, maximum, creator, tags, users, createdAt });
                       }}
                       display="flex"
                       margin="auto"

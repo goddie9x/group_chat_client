@@ -12,7 +12,7 @@ import TButton from 'components/button';
 import TSearch, { TSearchValueProps } from 'components/search';
 import TTypography from 'components/typography';
 import TRoomItem from '../../container/roomItem';
-import TCreateChatRoom, { TCreateChatRoomSchema } from '../../container/modal/chat/create';
+import TModifyChatRoom from '../../container/modal/chat/mofify';
 
 import { setHelmet } from 'store/slices/helmet';
 import { RootState } from 'store';
@@ -39,7 +39,7 @@ const TChatRooms = () => {
   const [searchValue, setSearchValue] = useState<string>('');
   const [page, setPage] = useState(1);
   const [openCreateRoom, setOpenCreateRoom] = useState(false);
-  const [updateData, setUpdateData] = useState<TCreateChatRoomSchema | undefined>(undefined);
+  const [selectedRoomData, setSelectedRoomData] = useState<TRoomsProps | undefined>(undefined);
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.auth.userData);
@@ -123,7 +123,7 @@ const TChatRooms = () => {
             onClick={() => {
               if (currentUser) {
                 setOpenCreateRoom(true);
-                setUpdateData(undefined);
+                setSelectedRoomData(undefined);
               } else {
                 dispatch(setAlert({ title: t('error'), message: t('you_have_to_login_first'), type: 'error' }));
               }
@@ -141,17 +141,17 @@ const TChatRooms = () => {
       </TGrid>
       <TGrid container marginY={2}>
         {rooms.map((room, index) => (
-          <TRoomItem key={index} {...room} onEdit={(room) => setUpdateData(room)} />
+          <TRoomItem key={index} {...room} onEdit={(room) => setSelectedRoomData(room)} />
         ))}
       </TGrid>
-      <TCreateChatRoom
+      <TModifyChatRoom
         title={t('we_will_not_save_chat_history')}
-        open={openCreateRoom || !!updateData}
+        open={openCreateRoom || !!selectedRoomData}
         onClose={() => {
           setOpenCreateRoom(false);
-          setUpdateData(undefined);
+          setSelectedRoomData(undefined);
         }}
-        updateData={updateData}
+        selectedRoomData={selectedRoomData}
       />
     </TBox>
   );

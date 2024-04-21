@@ -19,6 +19,7 @@ const USER_ENDPOINT = {
 };
 const ROOM_ENDPOINT = {
   CREATE: API_HOST + '/chat-room/create',
+  UPDATE: (_id: string) => API_HOST + '/chat-room/update/' + _id,
   FIND_CHAT_ROOM: API_HOST + '/chat-room/search?search=',
   LIST_CHAT_ROOM_PER_PAGE: API_HOST + '/chat-room/?page=',
   FRESH_LIST_CHAT_ROOM_PER_PAGE: API_HOST + '/chat-room/?reload=1&page=',
