@@ -52,7 +52,6 @@ const TVideoCall = ({ _id: roomId, creator, users }: TRoomsProps) => {
     }
     const peer = new SimplePeer({
       initiator: true,
-      iceCompleteTimeout: 10000,
       trickle: false,
       offerOptions: {
         offerToReceiveAudio: true,
@@ -61,7 +60,6 @@ const TVideoCall = ({ _id: roomId, creator, users }: TRoomsProps) => {
       stream,
       config: {
         iceServers: [
-          { urls: process.env.REACT_APP_TURN_SERVER! },
           {
             urls: process.env.REACT_APP_TURN_SERVER!,
             username: process.env.REACT_APP_TURN_USERNAME,
@@ -89,7 +87,6 @@ const TVideoCall = ({ _id: roomId, creator, users }: TRoomsProps) => {
   const addPeerToReceiveStream = (user: UserDataSchema) => {
     const peer = new Peer({
       initiator: false,
-      iceCompleteTimeout: 10000,
       trickle: false,
       answerOptions: {
         offerToReceiveAudio: false,
@@ -98,22 +95,7 @@ const TVideoCall = ({ _id: roomId, creator, users }: TRoomsProps) => {
       config: {
         iceServers: [
           {
-            urls: process.env.REACT_APP_TURN_DEFAULT_SERVER!,
-            username: process.env.REACT_APP_TURN_USERNAME,
-            credential: process.env.REACT_APP_TURN_PASSWORD,
-          },
-          {
-            urls: process.env.REACT_APP_TURN_TCP_SERVER!,
-            username: process.env.REACT_APP_TURN_USERNAME,
-            credential: process.env.REACT_APP_TURN_PASSWORD,
-          },
-          {
-            urls: process.env.REACT_APP_TURN_TCP2_SERVER!,
-            username: process.env.REACT_APP_TURN_USERNAME,
-            credential: process.env.REACT_APP_TURN_PASSWORD,
-          },
-          {
-            urls: process.env.REACT_APP_TURN_TCP_GLOBAL_SERVER!,
+            urls: process.env.REACT_APP_TURN_SERVER!,
             username: process.env.REACT_APP_TURN_USERNAME,
             credential: process.env.REACT_APP_TURN_PASSWORD,
           },
